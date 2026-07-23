@@ -269,3 +269,11 @@ def evaluate_imputation_performance(original_serie, percents_to_eliminate, loade
                 
     print("✅ All thresholds evaluated successfully!")
     return rmse, mae, r2, correlation
+
+def normalize(serie):
+    serie_mean = np.mean(serie)
+    serie_std = np.std(serie)
+
+    serie = (serie - serie_mean) / serie_std
+
+    return serie, serie_std, serie_mean
