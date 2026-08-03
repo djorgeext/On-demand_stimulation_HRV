@@ -65,7 +65,9 @@ def extract_hrv_features(serie, window_size=20, window_size_long=40):
 
     # 2. Separar variables predictoras del target
     X_ventanas_long = ventanas_long[:-1]
-    y_target = serie[window_size_long:]
+    next_rr = serie[window_size_long:]
+    last_rr_in_window = X_ventanas_long[:, -1]
+    y_target = next_rr - last_rr_in_window
 
     # 3. Extraer ventana CORTA
     X_ventanas_short = X_ventanas_long[:, -window_size:]
