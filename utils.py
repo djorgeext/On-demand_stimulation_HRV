@@ -4,6 +4,8 @@ from scipy.stats import zscore
 import pandas as pd
 import tensorflow as tf
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from pathlib import Path
+import os
 
 @tf.function(reduce_retracing=True)
 def fast_predict(seq_input, feats_input, loaded_model):
@@ -11,7 +13,7 @@ def fast_predict(seq_input, feats_input, loaded_model):
     # 10x y 20x más rápido que usar model.predict() para un solo elemento
     return loaded_model([seq_input, feats_input], training=False)
 
-def random_extraction(original_serie, percent_to_eliminate, start_idx=40):
+def random_extraction(original_serie, percent_to_eliminate, start_idx=40, seed=None):
     """
     Randomly eliminates a percentage of values from the original series.
     
@@ -19,13 +21,13 @@ def random_extraction(original_serie, percent_to_eliminate, start_idx=40):
     - original_serie: The original time series (numpy array or list).
     - percent_to_eliminate: The percentage of values to eliminate (float between 0 and 1).
     - start_idx: The index from which to start eliminating values (default is 40).
+    - seed: Integer to control the random number generator for reproducibility.
     
     Returns:
     - modified_serie: The modified series (as float) with NaN values in place of eliminated values.
     """
     n_total = len(original_serie)
     
-    # 1. Edge Case Protections
     if start_idx >= n_total:
         raise ValueError(f"start_idx ({start_idx}) cannot be greater than or equal to the series length ({n_total}).")
         
@@ -35,17 +37,16 @@ def random_extraction(original_serie, percent_to_eliminate, start_idx=40):
     if n_to_eliminate > available_spots:
         raise ValueError(f"Cannot eliminate {n_to_eliminate} values. Only {available_spots} valid spots available after index {start_idx}.")
 
-    # 2. CRITICAL: Copy and cast to float so NumPy accepts np.nan
     modified_serie = np.array(original_serie, dtype=float)
 
-    # 3. Select unique, non-repeating indices using replace=False
-    random_indexes = np.random.choice(
+    # Use NumPy's random generator with the specified seed
+    rng = np.random.default_rng(seed)
+    random_indexes = rng.choice(
         np.arange(start_idx, n_total), 
         size=n_to_eliminate, 
         replace=False
     )
     
-    # 4. Inject NaNs
     modified_serie[random_indexes] = np.nan
 
     return modified_serie
@@ -151,89 +152,118 @@ def extract_hrv_features(serie, window_size=20, window_size_long=40):
     df = pd.DataFrame({**rr_columns, **stats_columns})
     return df
 
-def evaluate_imputation_performance(original_serie, percents_to_eliminate, loaded_model, feats_mean, feats_scale, seq_mean, seq_scale, y_mean, y_scale, feature_cols, rr_cols):
+def evaluate_imputation_performance(original_serie, percents_to_eliminate, loaded_model, feats_mean, feats_scale, seq_mean, seq_scale, y_mean, y_scale, feature_cols, rr_cols, path_to_save):
     """
     Evaluates the autoregressive imputation performance of a model across 
-    different percentages of missing data.
+    different percentages of missing data for n differents realizations
     
     Returns:
         rmse (ndarray), mae (ndarray), r2 (ndarray), correlation (ndarray)
     """
     print(f"Starting autoregressive imputation across {len(percents_to_eliminate)} thresholds...")
-    
-    # Initialize metric arrays
-    rmse = np.zeros_like(percents_to_eliminate, dtype=float)
-    mae = np.zeros_like(percents_to_eliminate, dtype=float)
-    r2 = np.zeros_like(percents_to_eliminate, dtype=float)
-    correlation = np.zeros_like(percents_to_eliminate, dtype=float)
 
-    for idx, percent in enumerate(percents_to_eliminate):
-        print(f"Evaluating elimination: {percent * 100:.2f}%")
-        
-        # CRITICAL FIX: Clear the truth/prediction lists for THIS specific percentage
-        y_true = []  
-        y_pred = []
-        
-        # Generate the series with NaNs
-        modified_serie = random_extraction(original_serie, percent_to_eliminate=percent, start_idx=40)
-        
-        # Iterate over the series starting from index 40
-        for i in range(40, len(modified_serie)):
+    seeds = [7, 101, 211, 317, 421]
+
+    for seed in seeds:
+        # Safely join paths using Path division and str()
+        seed_folder = Path(path_to_save) / str(seed)
+        seed_folder.mkdir(parents=True, exist_ok=True)
+
+        # Initialize metric arrays
+        rmse = np.zeros_like(percents_to_eliminate, dtype=float)
+        mae = np.zeros_like(percents_to_eliminate, dtype=float)
+        r2 = np.zeros_like(percents_to_eliminate, dtype=float)
+        correlation = np.zeros_like(percents_to_eliminate, dtype=float)
+
+        for idx, percent in enumerate(percents_to_eliminate):
+            # create a folder for every percentage inside each seed folder
+            percent_string = f"percent_{int(percent * 100)}"
+            print(f"Evaluating elimination: " + percent_string + "%")
+
+            # Safely append the percent subfolder
+            folder = seed_folder / percent_string
+            folder.mkdir(parents=True, exist_ok=True)
             
-            if np.isnan(modified_serie[i]):
-                
-                # 1. EXTRACT CLEAN HISTORY
-                history_clean = modified_serie[i-40 : i]
-                
-                # 2. ADAPT FOR EXTRACTOR FUNCTION
-                window_data_for_func = np.append(history_clean, np.nan)
-                
-                # 3. FEATURE EXTRACTION
-                df_step = extract_hrv_features(window_data_for_func, window_size=20, window_size_long=40)
-                
-                X_feats_step = df_step[feature_cols].values
-                X_rr_seq_step = df_step[rr_cols].values
-                
-                # 4. MANUAL SCALING
-                X_feats_step_scaled = (X_feats_step - feats_mean) / feats_scale
-                X_rr_seq_step_scaled = (X_rr_seq_step - seq_mean) / seq_scale
-                
-                # Reshape to 3D for the CNN-LSTM
-                X_rr_seq_step_3d = X_rr_seq_step_scaled.reshape(1, 20, 1)
-                
-                # 5. PREDICTION (Using the precompiled fast_predict)
-                y_pred_diff_scaled_tensor = fast_predict(
-                    tf.convert_to_tensor(X_rr_seq_step_3d, dtype=tf.float32), 
-                    tf.convert_to_tensor(X_feats_step_scaled, dtype=tf.float32),
-                    loaded_model
-                )
-                y_pred_diff_scaled = y_pred_diff_scaled_tensor.numpy()
-
-                # 6. DESCALING & RECONSTRUCTION
-                y_pred_diff_ms = (y_pred_diff_scaled.flatten()[0] * y_scale) + y_mean
-                y_pred_ms = y_pred_diff_ms + history_clean[-1] 
-                
-                # Store isolated values for metric calculation
-                y_true.append(original_serie[i])  
-                y_pred.append(y_pred_ms)  
-                
-                # 7. IMPUTATION
-                modified_serie[i] = y_pred_ms
-
-        # Calculate metrics ONLY if NaNs were actually generated/predicted
-        if len(y_true) > 0:
-            rmse[idx] = np.sqrt(mean_squared_error(y_true, y_pred))
-            mae[idx] = mean_absolute_error(y_true, y_pred)
-            r2[idx] = r2_score(y_true, y_pred)
-        else:
-            # Failsafe for very small arrays/percentages where 0 elements were removed
-            rmse[idx], mae[idx], r2[idx] = np.nan, np.nan, np.nan
+            # CRITICAL FIX: Clear the truth/prediction lists for THIS specific percentage
+            y_true = []  
+            y_pred = []
             
-        # Overall correlation between the true series and the completely imputed series
-        correlation[idx] = np.corrcoef(original_serie, modified_serie)[0, 1]
+            # Generate the series with NaNs
+            modified_serie = random_extraction(original_serie, percent_to_eliminate=percent, start_idx=40, seed=seed)
+            modified_serie_nan = modified_serie.copy()
+            # Iterate over the series starting from index 40
+            for i in range(40, len(modified_serie)):
                 
-    print("✅ All thresholds evaluated successfully!")
-    return rmse, mae, r2, correlation
+                if np.isnan(modified_serie[i]):
+                    
+                    # 1. EXTRACT CLEAN HISTORY
+                    history_clean = modified_serie[i-40 : i]
+                    
+                    # 2. ADAPT FOR EXTRACTOR FUNCTION
+                    window_data_for_func = np.append(history_clean, np.nan)
+                    
+                    # 3. FEATURE EXTRACTION
+                    df_step = extract_hrv_features(window_data_for_func, window_size=20, window_size_long=40)
+                    
+                    X_feats_step = df_step[feature_cols].values
+                    X_rr_seq_step = df_step[rr_cols].values
+                    
+                    # 4. MANUAL SCALING
+                    X_feats_step_scaled = (X_feats_step - feats_mean) / feats_scale
+                    X_rr_seq_step_scaled = (X_rr_seq_step - seq_mean) / seq_scale
+                    
+                    # Reshape to 3D for the CNN-LSTM
+                    X_rr_seq_step_3d = X_rr_seq_step_scaled.reshape(1, 20, 1)
+                    
+                    # 5. PREDICTION (Using the precompiled fast_predict)
+                    y_pred_diff_scaled_tensor = fast_predict(
+                        tf.convert_to_tensor(X_rr_seq_step_3d, dtype=tf.float32), 
+                        tf.convert_to_tensor(X_feats_step_scaled, dtype=tf.float32),
+                        loaded_model
+                    )
+                    y_pred_diff_scaled = y_pred_diff_scaled_tensor.numpy()
+
+                    # 6. DESCALING & RECONSTRUCTION
+                    y_pred_diff_ms = (y_pred_diff_scaled.flatten()[0] * y_scale) + y_mean
+                    y_pred_ms = y_pred_diff_ms + history_clean[-1] 
+                    
+                    # Store isolated values for metric calculation
+                    y_true.append(original_serie[i])  
+                    y_pred.append(y_pred_ms)  
+                    
+                    # 7. IMPUTATION
+                    modified_serie[i] = y_pred_ms
+
+                        # Calculate metrics ONLY if NaNs were actually generated/predicted
+            if len(y_true) > 0:
+                rmse[idx] = np.sqrt(mean_squared_error(y_true, y_pred))
+                mae[idx] = mean_absolute_error(y_true, y_pred)
+                r2[idx] = r2_score(y_true, y_pred)
+            else:
+                # Failsafe for very small arrays/percentages where 0 elements were removed
+                rmse[idx], mae[idx], r2[idx] = np.nan, np.nan, np.nan
+                
+            # Overall correlation between the true series and the completely imputed series
+            correlation[idx] = np.corrcoef(original_serie, modified_serie)[0, 1]
+            
+            # Wrap values in lists to prevent Pandas ValueError on scalars
+            results_df = pd.DataFrame({
+                'Percent_Eliminated': [percent],
+                'RMSE': [rmse[idx]],
+                'MAE': [mae[idx]],
+                'R2': [r2[idx]],
+                'Correlation': [correlation[idx]]
+            })
+            
+            save_df = folder / 'result_df.csv'
+            save_modified_serie_nan = folder / 'modified_serie_nan.txt'
+            save_modified_serie_filled = folder / 'modified_serie_filled.txt'
+
+            results_df.to_csv(save_df, index=False)
+            
+            np.savetxt(save_modified_serie_nan, modified_serie_nan, fmt='%g')
+            np.savetxt(save_modified_serie_filled, modified_serie, fmt='%g')
+
 
 def normalize(serie):
     serie_mean = np.mean(serie)
