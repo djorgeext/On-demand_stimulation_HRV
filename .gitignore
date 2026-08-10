@@ -221,3 +221,4 @@ __marimo__/
 
 # h5 datasets files
 *.h5
+results/
