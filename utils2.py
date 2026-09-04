@@ -6,6 +6,8 @@ from pathlib import Path
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import concurrent.futures
 import itertools
+from scipy.special import gamma
+import math
 
 @tf.function(reduce_retracing=True)
 def fast_predict(seq_input, feats_input, loaded_model):
@@ -51,106 +53,250 @@ def random_extraction(original_serie, percent_to_eliminate, start_idx=40, seed=N
 
     return modified_serie
 
-def extract_hrv_features(serie, window_size=20, window_size_long=40):
+def get_helmert_matrix(n: int) -> np.ndarray:
+    """Generates the orthonormal (N x N) Helmert transformation matrix."""
+    H = np.zeros((n, n), dtype=np.float64)
+    for k in range(1, n):
+        H[k - 1, :k] = 1.0
+        H[k - 1, k] = -float(k)
+        H[k - 1, : k + 1] /= np.sqrt(k * (k + 1.0))
+    H[n - 1, :] = 1.0 / np.sqrt(n)
+    return H
+
+
+def compute_poincare_nd(
+    windows: np.ndarray, n: int = 5, tau: int = 1, ddof: int = 0
+) -> tuple[np.ndarray, np.ndarray]:
+    """Vectorized computation of N-dimensional Poincaré standard deviations
+
+    and hyperellipsoid volume for a 2D batch of windows (M, W).
     """
-    Toma una serie de intervalos RR y los tamaños de ventana para construir
-    un DataFrame de características ortogonales y la variable objetivo (target).
-    """
-    if window_size_long < window_size:
-        raise ValueError("window_size_long debe ser mayor o igual a window_size")
+    if tau == 1:
+        embeddings = sliding_window_view(
+            windows, window_shape=n, axis=1
+        )  # (M, L, N)
+    else:
+        num_pts = windows.shape[1] - (n - 1) * tau
+        lag_indices = [np.arange(i * tau, i * tau + num_pts) for i in range(n)]
+        embeddings = np.stack([windows[:, idx] for idx in lag_indices], axis=-1)
 
-    serie = np.asarray(serie, dtype=float)
+    H = get_helmert_matrix(n)
+    projected = np.matmul(embeddings, H.T)
+    sd_metrics = np.std(projected, axis=1, ddof=ddof)  # (M, N)
 
-    # 1. Generar ventanas sobre la serie COMPLETA
-    ventanas_long = sliding_window_view(serie, window_size_long)
+    vol_factor = (np.pi ** (n / 2.0)) / gamma(n / 2.0 + 1.0)
+    hypervolume = vol_factor * np.prod(sd_metrics, axis=1)  # (M,)
 
-    # 2. Separar variables predictoras del target
-    X_ventanas_long = ventanas_long[:-1]
-    next_rr = serie[window_size_long:]
-    last_rr_in_window = X_ventanas_long[:, -1]
-    y_target = next_rr - last_rr_in_window
+    return sd_metrics, hypervolume
 
-    # 3. Extraer ventana CORTA
-    X_ventanas_short = X_ventanas_long[:, -window_size:]
 
-    # 4. Calcular diferencias dentro de la ventana CORTA
-    diffs = np.diff(X_ventanas_short, axis=1)
+def compute_ccm_nd(
+    windows: np.ndarray,
+    n: int = 5,
+    tau: int = 1,
+    hypervolume: np.ndarray | None = None,
+) -> np.ndarray:
+    """Calculates the generalized N-dimensional Complex Correlation Measure (CCM_N)."""
+    w = windows.shape[1]
+    required_span = (2 * n - 1) * tau + 1 if tau > 1 else 2 * n
+    if w < required_span:
+        raise ValueError(
+            f"window_size ({w}) must be at least {required_span} to form N-simplices for N={n} and tau={tau}."
+        )
 
-    # ---- MÉTRICAS TRADICIONALES ----
+    # 1. Phase space embedding: shape (M, L, N)
+    if tau == 1:
+        embeddings = sliding_window_view(windows, window_shape=n, axis=1)
+    else:
+        num_pts = w - (n - 1) * tau
+        lag_indices = [np.arange(i * tau, i * tau + num_pts) for i in range(n)]
+        embeddings = np.stack([windows[:, idx] for idx in lag_indices], axis=-1)
+
+    # 2. Extract consecutive (N + 1) points per simplex: shape (M, K, N+1, N)
+    simplex_vertices = sliding_window_view(
+        embeddings, window_shape=n + 1, axis=1
+    )
+    simplex_vertices = np.moveaxis(simplex_vertices, -1, 2)
+    num_simplices = simplex_vertices.shape[1]
+
+    # 3. Edge displacement vectors from vertex P_i: shape (M, K, N, N)
+    d_matrices = simplex_vertices[:, :, 1:, :] - simplex_vertices[:, :, :1, :]
+
+    # 4. Simplex volume: Vol(Delta_i) = (1 / N!) * |det(D_i)|
+    simplex_volumes = (1.0 / math.factorial(n)) * np.abs(
+        np.linalg.det(d_matrices)
+    )
+    sum_volumes = np.sum(simplex_volumes, axis=1)
+
+    # 5. Baseline hypervolume normalization V_N
+    if hypervolume is None:
+        _, hypervolume = compute_poincare_nd(windows, n=n, tau=tau)
+
+    denom = hypervolume * num_simplices
+    ccm = np.divide(
+        sum_volumes,
+        denom,
+        out=np.zeros_like(sum_volumes, dtype=float),
+        where=denom > 0,
+    )
+
+    return np.clip(ccm, 0.0, 1.0)
+
+
+def compute_asymmetry_features(diffs: np.ndarray) -> dict[str, np.ndarray]:
+    """Computes asymmetry indices (Porta, Guzik) and difference counts (NN20, NN50)."""
     n_above = np.sum(diffs > 0, axis=1)
     n_below = np.sum(diffs < 0, axis=1)
     suma_porta = n_above + n_below
-    porta_index = np.divide(n_below, suma_porta, out=np.zeros_like(n_below, dtype=float), where=suma_porta!=0)
+    porta_index = np.divide(
+        n_below,
+        suma_porta,
+        out=np.zeros_like(n_below, dtype=float),
+        where=suma_porta != 0,
+    )
 
     d_above = np.sum(np.abs(diffs) * (diffs > 0), axis=1) / np.sqrt(2)
     d_total = np.sum(np.abs(diffs), axis=1) / np.sqrt(2)
-    guzic_index = np.divide(d_above, d_total, out=np.zeros_like(d_above, dtype=float), where=d_total!=0)
+    guzic_index = np.divide(
+        d_above,
+        d_total,
+        out=np.zeros_like(d_above, dtype=float),
+        where=d_total != 0,
+    )
 
-    nn50 = np.sum(np.abs(diffs) > 50, axis=1)
-    nn20 = np.sum(np.abs(diffs) > 20, axis=1)
+    return {
+        "n_above": n_above,
+        "n_below": n_below,
+        "nn20": np.sum(np.abs(diffs) > 20, axis=1),
+        "nn50": np.sum(np.abs(diffs) > 50, axis=1),
+        "porta": porta_index,
+        "guzik": guzic_index,
+    }
 
-    sdsd = np.std(diffs, axis=1)
-    sd1 = np.sqrt((sdsd**2) / 2)
 
-    mean_val = np.mean(X_ventanas_short, axis=1)
-    std_val = np.std(X_ventanas_short, axis=1)
-    var_val = std_val ** 2
+def compute_statistical_features(
+    windows: np.ndarray, diffs: np.ndarray
+) -> dict[str, np.ndarray]:
+    """Computes distribution moments, robust statistics (IQR, MAD),
 
-    std_long = np.std(X_ventanas_long, axis=1)
-    inner_value = 2 * std_long**2 - sd1**2
-    sd2 = np.sqrt(np.maximum(inner_value, 0))
-    c_n = np.pi * sd1 * sd2
+    fragmentation (PIP, Skewness), and Rescaled Range (R/S).
+    """
+    mean_val = np.mean(windows, axis=1)
+    std_val = np.std(windows, axis=1)
+    # cv = np.divide(
+    #     std_val,
+    #     mean_val,
+    #     out=np.zeros_like(std_val, dtype=float),
+    #     where=mean_val != 0,
+    # )
 
-    # CCM
-    ventanas_4puntos = sliding_window_view(X_ventanas_short, window_shape=4, axis=1)
-    rr_i, rr_i1, rr_i2, rr_i3 = ventanas_4puntos[:, 0], ventanas_4puntos[:, 1], ventanas_4puntos[:, 2], ventanas_4puntos[:, 3]
-    areas = 0.5 * np.abs(rr_i * (rr_i2 - rr_i3) - rr_i1 * (rr_i1 - rr_i3) + rr_i2 * (rr_i1 - rr_i2))
-    denominador_ccm = c_n * (window_size - 2)
-    ccm = np.divide(np.sum(areas, axis=1), denominador_ccm, out=np.zeros_like(c_n), where=denominador_ccm!=0)
-    ccm = np.where(ccm > 1, 1, ccm)
+    q75, q25 = np.percentile(windows, [75, 25], axis=1)
+    median_val = np.median(windows, axis=1)
+    mad = np.median(np.abs(windows - median_val[:, None]), axis=1)
 
-    # -------------------------------------------------------------
-    # NUEVAS CARACTERÍSTICAS ORTOGONALES (NO COLINEALES)
-    # -------------------------------------------------------------
-
-    # A. Coeficiente de Variación (CV)
-    cv = np.divide(std_val, mean_val, out=np.zeros_like(std_val, dtype=float), where=mean_val!=0)
-
-    # B. Robustez a Outliers: Rango Intercuartílico (IQR) y MAD
-    q75, q25 = np.percentile(X_ventanas_short, [75, 25], axis=1)
-    iqr = q75 - q25
-
-    median_val = np.median(X_ventanas_short, axis=1)
-    mad = np.median(np.abs(X_ventanas_short - median_val[:, None]), axis=1)
-
-    # C. Fragmentación del Ritmo Cardíaco (PIP - Puntos de Inflexión)
+    # Heart Rate Fragmentation: Percentage of Inflection Points (PIP)
     diffs_1 = diffs[:, :-1]
     diffs_2 = diffs[:, 1:]
     inflections = (diffs_1 * diffs_2) <= 0
-    pip = np.sum(inflections, axis=1) / (window_size - 2)
+    pip = np.sum(inflections, axis=1) / (windows.shape[1] - 2)
 
-    # D. Asimetría (Skewness) de las diferencias
-    mean_diffs = np.mean(diffs, axis=1, keepdims=True)
-    std_diffs = np.std(diffs, axis=1, keepdims=True)
-    std_diffs_safe = np.where(std_diffs == 0, 1e-10, std_diffs) # Evitar NaN
-    skewness = np.mean(((diffs - mean_diffs) / std_diffs_safe)**3, axis=1)
+    # Differences Skewness
+    # mean_diffs = np.mean(diffs, axis=1, keepdims=True)
+    # std_diffs = np.std(diffs, axis=1, keepdims=True)
+    # std_diffs_safe = np.where(std_diffs == 0, 1e-10, std_diffs)
+    # skewness = np.mean(((diffs - mean_diffs) / std_diffs_safe) ** 3, axis=1)
 
-    # -------------------------------------------------------------
-    # EMPAQUETADO FINAL
-    # -------------------------------------------------------------
-    rr_columns = {f'rr_{i+1}': X_ventanas_short[:, i] for i in range(window_size)}
+    # Rescaled Range (R/S)
+    # 1. Cumulative departures from the mean: X_t = sum(x_i - mean)
+    cum_dev = np.cumsum(windows - mean_val[:, None], axis=1)
 
-    stats_columns = {
-        'n_above': n_above, 'n_below': n_below, 'nn20': nn20, 'nn50': nn50,
-        'sdsd': sdsd, 'mean': mean_val, 'std': std_val, 'var': var_val,
-        'std_long': std_long, 'sd1': sd1, 'sd2': sd2, 'c_n': c_n,
-        'ccm': ccm, 'porta': porta_index, 'guzik': guzic_index,
-        'cv': cv, 'iqr': iqr, 'mad': mad, 'pip': pip, 'skewness': skewness, # <--- NUEVAS
-        'target': y_target
+    # 2. Range of cumulative deviations: R_N = max(X_t) - min(X_t)
+    r_n = np.max(cum_dev, axis=1) - np.min(cum_dev, axis=1)
+
+    # 3. Rescaled Range: (R/S)_N = R_N / S_N
+    rs_val = np.divide(
+        r_n,
+        std_val,
+        out=np.zeros_like(r_n, dtype=float),
+        where=std_val != 0,
+    )
+
+    return {
+        "mean": mean_val,
+        "std": std_val,
+        # "var": std_val**2,
+        # "cv": cv,
+        "iqr": q75 - q25,
+        # "mad": mad,
+        "pip": pip,
+        # "skewness": skewness,
+        "rs": rs_val,
     }
 
-    df = pd.DataFrame({**rr_columns, **stats_columns})
-    return df
+
+def compute_phase_space_features(
+    windows: np.ndarray, tau: int = 1
+) -> dict[str, np.ndarray]:
+    """Extracts 2D and 5D Poincaré and CCM geometric metrics."""
+    # N = 2 (Classical Poincaré & CCM)
+    sd_n2, vol_n2 = compute_poincare_nd(windows, n=2, tau=tau)
+    ccm_n2 = compute_ccm_nd(windows, n=2, tau=tau, hypervolume=vol_n2)
+
+    # N = 5 (Hyperellipsoid & Hyperdimensional CCM)
+    sd_n5, vol_n5 = compute_poincare_nd(windows, n=5, tau=tau)
+    ccm_n5 = compute_ccm_nd(windows, n=5, tau=tau, hypervolume=vol_n5)
+
+    return {
+        "sd1": sd_n2[:, 0],
+        "sd2": sd_n2[:, 1],
+        "c_n": vol_n2,
+        "ccm": ccm_n2,
+        "sd5_n5": sd_n5[:, 4],
+        #"vol_n5": vol_n5,
+        "ccm_n5": ccm_n5
+    }
+
+
+# =============================================================================
+# 3. PIPELINE ORCHESTRATOR
+# =============================================================================
+
+
+def extract_hrv_features(
+    serie: np.ndarray | list, window_size: int = 20
+) -> pd.DataFrame:
+    """Toma una serie de intervalos RR y extrae un conjunto de características
+
+    estadísticas, morfológicas y geométricas ortogonales (Poincaré y CCM N=2 y N=5).
+    """
+    serie = np.asarray(serie, dtype=np.float64)
+    if len(serie) < window_size + 1:
+        raise ValueError(
+            f"La longitud de la serie ({len(serie)}) debe ser al menos window_size + 1 ({window_size + 1})"
+        )
+
+    # 1. Segmentación de ventanas deslizantes (Predictores y Target)
+    ventanas = sliding_window_view(serie, window_size + 1)
+    X_ventanas = ventanas[:, :-1]
+    y_target = ventanas[:, -1] - X_ventanas[:, -1]
+    diffs = np.diff(X_ventanas, axis=1)
+
+    # 2. Extracción modular de características
+    rr_columns = {f"rr_{i+1}": X_ventanas[:, i] for i in range(window_size)}
+    asymmetry_feats = compute_asymmetry_features(diffs)
+    stats_feats = compute_statistical_features(X_ventanas, diffs)
+    phase_space_feats = compute_phase_space_features(X_ventanas, tau=1)
+
+    # 3. Construcción final del DataFrame
+    return pd.DataFrame(
+        {
+            **rr_columns,
+            **asymmetry_feats,
+            **stats_feats,
+            **phase_space_feats,
+            "target": y_target,
+        }
+    )
 
 def _process_single_run(seed, percent, idx, original_serie, loaded_model, feats_mean, feats_scale, seq_mean, seq_scale, y_mean, y_scale, feature_cols, rr_cols, path_to_save):
     """
