@@ -58,8 +58,6 @@ def extract_hrv_features(serie, window_size=20, window_size_long=40):
     """
     if window_size_long < window_size:
         raise ValueError("window_size_long debe ser mayor o igual a window_size")
-    if window_size < 7:
-        raise ValueError("window_size debe ser mayor o igual a 7 para calcular ccm_6d")
 
     serie = np.asarray(serie, dtype=float)
 
@@ -103,38 +101,13 @@ def extract_hrv_features(serie, window_size=20, window_size_long=40):
     sd2 = np.sqrt(np.maximum(inner_value, 0))
     c_n = np.pi * sd1 * sd2
 
-    # CCM 2D (Triángulos en el plano de Poincaré)
+    # CCM
     ventanas_4puntos = sliding_window_view(X_ventanas_short, window_shape=4, axis=1)
-    rr_i, rr_i1, rr_i2, rr_i3 = ventanas_4puntos[:, :, 0], ventanas_4puntos[:, :, 1], ventanas_4puntos[:, :, 2], ventanas_4puntos[:, :, 3]
+    rr_i, rr_i1, rr_i2, rr_i3 = ventanas_4puntos[:, 0], ventanas_4puntos[:, 1], ventanas_4puntos[:, 2], ventanas_4puntos[:, 3]
     areas = 0.5 * np.abs(rr_i * (rr_i2 - rr_i3) - rr_i1 * (rr_i1 - rr_i3) + rr_i2 * (rr_i1 - rr_i2))
     denominador_ccm = c_n * (window_size - 2)
     ccm = np.divide(np.sum(areas, axis=1), denominador_ccm, out=np.zeros_like(c_n), where=denominador_ccm!=0)
     ccm = np.where(ccm > 1, 1, ccm)
-
-    # -------------------------------------------------------------
-    # CCM 6D (Determinante de Cayley-Menger para 6-Símplices)
-    # -------------------------------------------------------------
-    n_pts = 7  # 7 vértices para un 6-símplex
-    ventanas_7puntos = sliding_window_view(X_ventanas_short, window_shape=n_pts, axis=1)  # shape: (N, W - 6, 7)
-    
-    # Matriz de distancias euclídeas al cuadrado: d_jk^2 = (R_j - R_k)^2
-    d_sq = (ventanas_7puntos[..., :, None] - ventanas_7puntos[..., None, :]) ** 2  # shape: (N, W - 6, 7, 7)
-
-    # Construcción de la matriz Cayley-Menger 8x8
-    cm_shape = list(ventanas_7puntos.shape[:-1]) + [8, 8]
-    cm_matrix = np.ones(cm_shape, dtype=float)
-    cm_matrix[..., 0, 0] = 0.0
-    cm_matrix[..., 1:, 1:] = d_sq
-
-    # Cálculo del hipervolumen V_6 = sqrt( max(-det(M), 0) / (2^6 * (6!)^2) )
-    det_cm = np.linalg.det(cm_matrix)
-    v6 = np.sqrt(np.maximum(-det_cm, 0.0) / 33177600.0)
-
-    # Normalización del CCM 6D
-    n_simplices = window_size - (n_pts - 1)  # W - 6 = 14 cuando W=20
-    denominador_ccm_6d = c_n * n_simplices
-    ccm_6d = np.divide(np.sum(v6, axis=1), denominador_ccm_6d, out=np.zeros_like(c_n), where=denominador_ccm_6d != 0)
-    ccm_6d = np.where(ccm_6d > 1, 1, ccm_6d)
 
     # -------------------------------------------------------------
     # NUEVAS CARACTERÍSTICAS ORTOGONALES (NO COLINEALES)
@@ -159,7 +132,7 @@ def extract_hrv_features(serie, window_size=20, window_size_long=40):
     # D. Asimetría (Skewness) de las diferencias
     mean_diffs = np.mean(diffs, axis=1, keepdims=True)
     std_diffs = np.std(diffs, axis=1, keepdims=True)
-    std_diffs_safe = np.where(std_diffs == 0, 1e-10, std_diffs)
+    std_diffs_safe = np.where(std_diffs == 0, 1e-10, std_diffs) # Evitar NaN
     skewness = np.mean(((diffs - mean_diffs) / std_diffs_safe)**3, axis=1)
 
     # -------------------------------------------------------------
@@ -171,8 +144,8 @@ def extract_hrv_features(serie, window_size=20, window_size_long=40):
         'n_above': n_above, 'n_below': n_below, 'nn20': nn20, 'nn50': nn50,
         'sdsd': sdsd, 'mean': mean_val, 'std': std_val, 'var': var_val,
         'std_long': std_long, 'sd1': sd1, 'sd2': sd2, 'c_n': c_n,
-        'ccm': ccm, 'ccm_6d': ccm_6d, 'porta': porta_index, 'guzik': guzic_index,
-        'cv': cv, 'iqr': iqr, 'mad': mad, 'pip': pip, 'skewness': skewness,
+        'ccm': ccm, 'porta': porta_index, 'guzik': guzic_index,
+        'cv': cv, 'iqr': iqr, 'mad': mad, 'pip': pip, 'skewness': skewness, # <--- NUEVAS
         'target': y_target
     }
 
