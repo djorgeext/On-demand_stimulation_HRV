@@ -313,7 +313,11 @@ def _process_single_run(seed, percent, idx, original_serie, loaded_model, feats_
     y_pred = []
     
     # Generate the series with NaNs
-    modified_serie = random_extraction(original_serie, percent_to_eliminate=percent, start_idx=40, seed=seed)
+    modified_serie = random_extraction(original_serie, percent_to_eliminate=percent, start_idx=0, seed=seed)
+    ####################### Attached to modification later ################################################
+    modified_serie[:40] = np.nan_to_num(modified_serie[:40], nan=1000.0)
+    #######################################################################################################
+    
     modified_serie_nan = modified_serie.copy()
     
     # Iterate over the series starting from index 40
