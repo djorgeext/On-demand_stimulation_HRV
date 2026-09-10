@@ -222,3 +222,6 @@ __marimo__/
 # h5 datasets files
 *.h5
 results/
+results_missing_below_30_1000/
+
+*.zip

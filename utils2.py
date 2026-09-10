@@ -164,11 +164,15 @@ def compute_asymmetry_features(diffs: np.ndarray) -> dict[str, np.ndarray]:
         where=d_total != 0,
     )
 
+    # A sequence of 20 RR intervals produces 19 successive differences (RR[i+1] - RR[i]).
+    # If your pipeline expects the last 20 difference values instead, change -19 to -20.
+    diffs_last_20_rr = diffs[:, -19:]
+
     return {
         "n_above": n_above,
         "n_below": n_below,
         "nn20": np.sum(np.abs(diffs) > 20, axis=1),
-        "nn50": np.sum(np.abs(diffs) > 50, axis=1),
+        "nn50": np.sum(np.abs(diffs_last_20_rr) > 50, axis=1),
         "porta": porta_index,
         "guzik": guzic_index,
     }
@@ -315,23 +319,23 @@ def _process_single_run(seed, percent, idx, original_serie, loaded_model, feats_
     # Generate the series with NaNs
     modified_serie = random_extraction(original_serie, percent_to_eliminate=percent, start_idx=0, seed=seed)
     ####################### Attached to modification later ################################################
-    modified_serie[:40] = np.nan_to_num(modified_serie[:40], nan=1000.0)
+    modified_serie[:30] = np.nan_to_num(modified_serie[:30], nan=1000.0)
     #######################################################################################################
-    
+
     modified_serie_nan = modified_serie.copy()
     
-    # Iterate over the series starting from index 40
-    for i in range(40, len(modified_serie)):
+    # Iterate over the series starting from index 30
+    for i in range(30, len(modified_serie)):
         if np.isnan(modified_serie[i]):
             
             # 1. EXTRACT CLEAN HISTORY
-            history_clean = modified_serie[i-40 : i]
+            history_clean = modified_serie[i-30 : i]
             
             # 2. ADAPT FOR EXTRACTOR FUNCTION
             window_data_for_func = np.append(history_clean, np.nan)
             
             # 3. FEATURE EXTRACTION
-            df_step = extract_hrv_features(window_data_for_func, window_size=20, window_size_long=40)
+            df_step = extract_hrv_features(window_data_for_func, window_size=30)
             
             X_feats_step = df_step[feature_cols].values
             X_rr_seq_step = df_step[rr_cols].values
@@ -341,7 +345,7 @@ def _process_single_run(seed, percent, idx, original_serie, loaded_model, feats_
             X_rr_seq_step_scaled = (X_rr_seq_step - seq_mean) / seq_scale
             
             # Reshape to 3D for the CNN-LSTM
-            X_rr_seq_step_3d = X_rr_seq_step_scaled.reshape(1, 20, 1)
+            X_rr_seq_step_3d = X_rr_seq_step_scaled.reshape(1, 30, 1)
             
             # 5. PREDICTION 
             y_pred_diff_scaled_tensor = fast_predict(
