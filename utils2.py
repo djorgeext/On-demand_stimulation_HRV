@@ -164,15 +164,15 @@ def compute_asymmetry_features(diffs: np.ndarray) -> dict[str, np.ndarray]:
         where=d_total != 0,
     )
 
-    # A sequence of 20 RR intervals produces 19 successive differences (RR[i+1] - RR[i]).
-    # If your pipeline expects the last 20 difference values instead, change -19 to -20.
-    diffs_last_20_rr = diffs[:, -19:]
+    # A sequence of 10 RR intervals produces 9 successive differences (RR[i+1] - RR[i]).
+    # If your pipeline expects the last 10 difference values instead, change -9 to -10.
+    diffs_last_10_rr = diffs[:, -9:]
 
     return {
         "n_above": n_above,
         "n_below": n_below,
         "nn20": np.sum(np.abs(diffs) > 20, axis=1),
-        "nn50": np.sum(np.abs(diffs_last_20_rr) > 50, axis=1),
+        "nn50": np.sum(np.abs(diffs) > 50, axis=1),
         "porta": porta_index,
         "guzik": guzic_index,
     }
