@@ -8,6 +8,7 @@ import concurrent.futures
 import itertools
 from scipy.special import gamma
 import math
+from scipy.stats import zscore
 
 @tf.function(reduce_retracing=True)
 def fast_predict(seq_input, feats_input, loaded_model):
@@ -444,3 +445,17 @@ def evaluate_imputation_performance(original_serie, percents_to_eliminate, loade
     # 3. (Optional) Return a compiled dataframe of all results instead of overwriting individual arrays
     aggregated_results_df = pd.DataFrame(all_results).sort_values(by=['Seed', 'Percent_Eliminated']).reset_index(drop=True)
     return aggregated_results_df
+
+
+def psd(serie, window_size=2048):
+        overlap = window_size // 2
+        quantity = len(serie) // overlap
+        cutting = quantity * overlap
+        serie_right = np.reshape(serie[:cutting], (quantity, overlap))
+        serie_right = np.concatenate((serie_right[:-1], serie_right[1:]), axis=1)
+        serie_left = np.reshape(np.flip(serie)[:cutting], (quantity, overlap))
+        serie_left = np.concatenate((serie_left[:-1], serie_left[1:]), axis=1)
+        serie_matrix = np.concatenate((serie_right, serie_left), axis=0)
+        serie_matrix = zscore(serie_matrix, axis=1)
+        serie_matrix = np.abs(np.fft.fft(serie_matrix, axis=1))**2
+        return np.mean(serie_matrix, axis=0)[:window_size//2 + 1]
