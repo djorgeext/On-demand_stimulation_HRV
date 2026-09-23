@@ -9,6 +9,8 @@ import itertools
 from scipy.special import gamma
 import math
 from scipy.stats import zscore
+import scipy.linalg as linalg
+from statsmodels.tsa.arima_process import ArmaProcess
 
 @tf.function(reduce_retracing=True)
 def fast_predict(seq_input, feats_input, loaded_model):
@@ -303,7 +305,7 @@ def extract_hrv_features(
         }
     )
 
-def _process_single_run(seed, percent, idx, original_serie, loaded_model, feats_mean, feats_scale, seq_mean, seq_scale, y_mean, y_scale, feature_cols, rr_cols, path_to_save):
+def _process_single_run(seed, percent, idx, original_serie, loaded_model, feats_mean, feats_scale, seq_mean, seq_scale, y_mean, y_scale, feature_cols, rr_cols, path_to_save, subject, phi_burg, sigma_burg, ages_table):
     """
     Worker function to process a single combination of seed and percentage.
     """
@@ -319,11 +321,22 @@ def _process_single_run(seed, percent, idx, original_serie, loaded_model, feats_
     
     # Generate the series with NaNs
     modified_serie = random_extraction(original_serie, percent_to_eliminate=percent, start_idx=0, seed=seed)
-    ####################### Attached to modification later ################################################
-    modified_serie[:30] = np.nan_to_num(modified_serie[:30], nan=1000.0)
-    #######################################################################################################
-
     modified_serie_nan = modified_serie.copy()
+
+    ####################### Attached to modification later ################################################
+    predictor = ExactARPacingPredictor(phi=phi_burg, sigma_sq=sigma_burg)
+
+    for i in range(30):
+        if i == 0 and np.isnan(modified_serie[i]):
+            modified_serie[i] = seq_mean  # Replace first NaN with mean reference
+            continue
+        elif np.isnan(modified_serie[i]) and i >= 1:
+            # Use the last observed value for imputation
+            next_rr_paced = predictor.forecast_next_rr(
+                modified_serie[:i], seq_mean, seq_scale, stochastic=True
+            )
+            modified_serie[i] = next_rr_paced
+    #######################################################################################################
     
     # Iterate over the series starting from index 30
     for i in range(30, len(modified_serie)):
@@ -343,7 +356,10 @@ def _process_single_run(seed, percent, idx, original_serie, loaded_model, feats_
             
             # 4. MANUAL SCALING
             X_feats_step_scaled = (X_feats_step - feats_mean) / feats_scale
-            X_rr_seq_step_scaled = (X_rr_seq_step - seq_mean) / seq_scale
+
+            # X_rr_seq_step_scaled = (X_rr_seq_step - seq_mean) / seq_scale
+            # scale the RR sequence using its own mean and scale of this window
+            X_rr_seq_step_scaled = (X_rr_seq_step - np.mean(X_rr_seq_step)) / np.std(X_rr_seq_step)
             
             # Reshape to 3D for the CNN-LSTM
             X_rr_seq_step_3d = X_rr_seq_step_scaled.reshape(1, 30, 1)
@@ -401,7 +417,7 @@ def _process_single_run(seed, percent, idx, original_serie, loaded_model, feats_
     }
 
 
-def evaluate_imputation_performance(original_serie, percents_to_eliminate, loaded_model, feats_mean, feats_scale, seq_mean, seq_scale, y_mean, y_scale, feature_cols, rr_cols, path_to_save):
+def evaluate_imputation_performance(original_serie, percents_to_eliminate, loaded_model, feats_mean, feats_scale, seq_mean, seq_scale, y_mean, y_scale, feature_cols, rr_cols, path_to_save, subject_name, phi_burg, sigma_burg, ages_table):
     """
     Evaluates the autoregressive imputation performance of a model across 
     different percentages of missing data for n differents realizations in parallel.
@@ -421,7 +437,8 @@ def evaluate_imputation_performance(original_serie, percents_to_eliminate, loade
         tasks.append((
             seed, percent, idx, original_serie, loaded_model, 
             feats_mean, feats_scale, seq_mean, seq_scale, 
-            y_mean, y_scale, feature_cols, rr_cols, path_to_save
+            y_mean, y_scale, feature_cols, rr_cols, path_to_save,
+            subject_name, phi_burg, sigma_burg, ages_table
         ))
 
     all_results = []
@@ -459,3 +476,78 @@ def psd(serie, window_size=2048):
         serie_matrix = zscore(serie_matrix, axis=1)
         serie_matrix = np.abs(np.fft.fft(serie_matrix, axis=1))**2
         return np.mean(serie_matrix, axis=0)[:window_size//2 + 1]
+
+class ExactARPacingPredictor:
+    def __init__(self, phi, sigma_sq):
+        """
+        phi: AR coefficients [phi_1, ..., phi_p]
+        sigma_sq: Innovation variance from Burg
+        """
+        self.phi = np.asarray(phi, dtype=np.float64)
+        self.p = len(self.phi)
+        self.sigma_sq = float(sigma_sq)
+
+        # 1. Compute exact theoretical autocovariances gamma(0) ... gamma(p)
+        # In ArmaProcess, AR polynomial is 1 - phi_1*z - phi_2*z^2 ...
+        ar_poly = np.r_[1.0, -self.phi]
+        ma_poly = np.r_[1.0]
+        arma = ArmaProcess(ar_poly, ma_poly)
+        
+        # Theoretical autocorrelation rho(k)
+        self.autocorr = arma.acf(lags=self.p + 1)
+        # Theoretical autocovariance gamma(k)
+        self.gamma = self.autocorr * (self.sigma_sq / (1.0 - np.dot(self.phi, self.autocorr[1:self.p + 1])))
+
+    def _get_optimal_weights(self, N):
+        """Solves exact MMSE linear predictor weights w and error variance for history length N."""
+        k = min(N, self.p)
+        
+        if k == self.p:
+            return self.phi, self.sigma_sq
+
+        # Exact Yule-Walker solve for finite history N < p
+        R_matrix = linalg.toeplitz(self.gamma[:k])
+        r_vector = self.gamma[1:k + 1]
+        
+        weights = linalg.solve(R_matrix, r_vector)
+        # Exact conditional error variance for finite sample size N
+        pred_variance = self.gamma[0] - np.dot(weights, r_vector)
+        
+        return weights, max(pred_variance, self.sigma_sq)
+
+    def forecast_next_rr(self, rr_history, rr_mean_ref, rr_std_ref, stochastic=False):
+        """
+        Forecasts exactly 1 step ahead (RR[n+1]) from 1 to 30 past RR intervals.
+        """
+        rr = np.asarray(rr_history, dtype=np.float64).flatten()
+        N = len(rr)
+        if N == 0:
+            raise ValueError("History must contain at least 1 sample.")
+
+        # Patient baseline anchor:
+        # If history is long (>=10), use the patient's current operational mean to prevent drift.
+        # If history is tiny (1 to 3 beats), smoothly blend toward the age reference.
+        weight_local = min(N / 10.0, 1.0)
+        local_mean = np.mean(rr)
+        effective_mean = weight_local * local_mean + (1.0 - weight_local) * rr_mean_ref
+
+        # Standardize using age-matched standard deviation (scale of variability)
+        z = (rr - effective_mean) / (rr_std_ref + 1e-8)
+
+        # Get exact weights and exact variance for this specific history length
+        weights, pred_var = self._get_optimal_weights(N)
+        k = len(weights)
+
+        # Most recent beats ordered backwards: [z[n], z[n-1], ...]
+        z_recent = z[-1 : -k - 1 : -1]
+
+        # 1-step exact projection
+        z_next = float(np.dot(weights, z_recent))
+
+        # Pacing innovation with exact conditional variance
+        if stochastic:
+            z_next += np.random.normal(loc=0.0, scale=np.sqrt(pred_var))
+
+        # Denormalize
+        rr_next = (z_next * rr_std_ref) + effective_mean
+        return float(rr_next)

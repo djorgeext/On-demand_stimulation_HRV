@@ -17,12 +17,14 @@
     },
     "2021-2125": {
         "subjects": [
-            "nsr048RRcl"
+            "nsr048RRcl",
+            "008"
         ]
     },
     "2125-2699": {
         "subjects": [
-            "19088"
+            "19088",
+            "16483"
         ]
     },
     "2699-3220": {
@@ -33,13 +35,15 @@
     "3220-3481": {
         "subjects": [
             "nsr010RRcl",
-            "nsr038RRcl"
+            "nsr038RRcl",
+            "nsr041RRcl"
         ]
     },
     "3481-3689": {
         "subjects": [
             "nsr022RRcl",
-            "nsr045RRcl"
+            "nsr045RRcl",
+            "nsr018RRcl"
         ]
     },
     "3689-3900": {
