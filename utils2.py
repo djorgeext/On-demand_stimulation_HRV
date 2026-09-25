@@ -247,7 +247,12 @@ def compute_phase_space_features(
     """Extracts 2D and 5D Poincaré and CCM geometric metrics."""
     # N = 2 (Classical Poincaré & CCM)
     sd_n2, vol_n2 = compute_poincare_nd(windows, n=2, tau=tau)
+    sd_n3, vol_n3 = compute_poincare_nd(windows, n=3, tau=tau)
+    sd_n4, vol_n4 = compute_poincare_nd(windows, n=4, tau=tau)
+
     ccm_n2 = compute_ccm_nd(windows, n=2, tau=tau, hypervolume=vol_n2)
+    ccm_n3 = compute_ccm_nd(windows, n=3, tau=tau, hypervolume=vol_n3)
+    ccm_n4 = compute_ccm_nd(windows, n=4, tau=tau, hypervolume=vol_n4)
 
     # N = 5 (Hyperellipsoid & Hyperdimensional CCM)
     sd_n5, vol_n5 = compute_poincare_nd(windows, n=5, tau=tau)
@@ -258,6 +263,10 @@ def compute_phase_space_features(
         "sd2": sd_n2[:, 1],
         "c_n": vol_n2,
         "ccm": ccm_n2,
+        "ccm_n3": ccm_n3,
+        "ccm_n4": ccm_n4,
+        "sd3_n3": sd_n3[:, 2],
+        "sd4_n4": sd_n4[:, 3],
         "sd5_n5": sd_n5[:, 4],
         #"vol_n5": vol_n5,
         "ccm_n5": ccm_n5
