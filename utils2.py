@@ -11,6 +11,19 @@ import math
 from scipy.stats import zscore
 import scipy.linalg as linalg
 from statsmodels.tsa.arima_process import ArmaProcess
+from numba import njit, prange
+
+
+def get_rr_reference(age_years):
+
+    seq_mean = 505 * age_years**0.122
+
+    if age_years <= 12:
+        seq_scale = 80 * age_years**0.26
+    else:
+        seq_scale = 290 * age_years**(-0.2)
+
+    return float(seq_mean), float(seq_scale)
 
 @tf.function(reduce_retracing=True)
 def fast_predict(seq_input, feats_input, loaded_model):
@@ -147,7 +160,7 @@ def compute_ccm_nd(
 
 
 def compute_asymmetry_features(diffs: np.ndarray) -> dict[str, np.ndarray]:
-    """Computes asymmetry indices (Porta, Guzik) and difference counts (NN20, NN50)."""
+    """Computes asymmetry indices (Porta, Guzik), difference counts (NN20, NN50), and RMSSD[cite: 1]."""
     n_above = np.sum(diffs > 0, axis=1)
     n_below = np.sum(diffs < 0, axis=1)
     suma_porta = n_above + n_below
@@ -167,15 +180,15 @@ def compute_asymmetry_features(diffs: np.ndarray) -> dict[str, np.ndarray]:
         where=d_total != 0,
     )
 
-    # A sequence of 10 RR intervals produces 9 successive differences (RR[i+1] - RR[i]).
-    # If your pipeline expects the last 10 difference values instead, change -9 to -10.
-    diffs_last_10_rr = diffs[:, -9:]
+    # Root Mean Square of Successive Differences
+    rmssd = np.sqrt(np.mean(np.square(diffs), axis=1))
 
     return {
         "n_above": n_above,
         "n_below": n_below,
         "nn20": np.sum(np.abs(diffs) > 20, axis=1),
         "nn50": np.sum(np.abs(diffs) > 50, axis=1),
+        "rmssd": rmssd,
         "porta": porta_index,
         "guzik": guzic_index,
     }
@@ -272,6 +285,142 @@ def compute_phase_space_features(
         "ccm_n5": ccm_n5
     }
 
+# -------------------------------------------------------------------------
+# OPTIMIZED BURG AR EXTRACTOR (REPLACES fit_burg_ar & compute_burg_features)
+# -------------------------------------------------------------------------
+
+@njit(fastmath=True)
+def _fit_burg_ar_numba(x, order):
+    """JIT-compiled core of the Burg recursive algorithm."""
+    n = len(x)
+    mean_x = 0.0
+    for i in range(n): 
+        mean_x += x[i]
+    mean_x /= n
+    
+    f = np.zeros(n, dtype=np.float64)
+    b = np.zeros(n, dtype=np.float64)
+    sigma_sq = 0.0
+    for i in range(n):
+        val = x[i] - mean_x
+        f[i] = val
+        b[i] = val
+        sigma_sq += val * val
+    sigma_sq /= n
+    
+    a = np.zeros(order + 1, dtype=np.float64)
+    a[0] = 1.0
+    
+    for m in range(1, order + 1):
+        num = 0.0
+        den = 0.0
+        for i in range(m, n):
+            num -= 2.0 * f[i] * b[i - 1]
+            den += f[i] * f[i] + b[i - 1] * b[i - 1]
+        
+        km = 0.0
+        if den > 0:
+            km = num / den
+            
+        if km > 0.999999: km = 0.999999
+        elif km < -0.999999: km = -0.999999
+        
+        a_prev = a.copy()
+        for i in range(1, m):
+            a[i] = a_prev[i] + km * a_prev[m - i]
+        a[m] = km
+        
+        sigma_sq *= (1.0 - km * km)
+        
+        f_new = np.zeros(n, dtype=np.float64)
+        b_new = np.zeros(n, dtype=np.float64)
+        for i in range(m, n):
+            f_new[i] = f[i] + km * b[i - 1]
+            b_new[i] = b[i - 1] + km * f[i]
+        for i in range(m, n):
+            f[i] = f_new[i]
+            b[i] = b_new[i]
+            
+    phi = np.zeros(order, dtype=np.float64)
+    for i in range(order):
+        phi[i] = -a[i+1]
+        
+    if sigma_sq < 1e-12:
+        sigma_sq = 1e-12
+        
+    return phi, sigma_sq
+
+@njit(parallel=True, fastmath=True)
+def _compute_burg_batch_numba(windows, ar_order=5, psd_order=8, f_low=0.15, f_high=0.40, n_freq_pts=32):
+    """JIT-compiled, Multithreaded AR extraction and continuous PSD integration."""
+    M, W = windows.shape
+    ar_coeffs = np.zeros((M, ar_order), dtype=np.float64)
+    burg_powers = np.zeros(M, dtype=np.float64)
+    
+    f_grid = np.linspace(f_low, f_high, n_freq_pts)
+    
+    for i in prange(M):
+        w = windows[i]
+        
+        # 1. AR Coefficients
+        phi_ar, _ = _fit_burg_ar_numba(w, ar_order)
+        for k in range(ar_order):
+            ar_coeffs[i, k] = phi_ar[k]
+            
+        # 2. HF Power calculation
+        phi_psd, sigma_sq = _fit_burg_ar_numba(w, psd_order)
+        
+        mean_w = 0.0
+        for j in range(W):
+            mean_w += w[j]
+        mean_w /= W
+        
+        dt = mean_w / 1000.0 if mean_w > 10.0 else mean_w
+        if dt < 1e-4: 
+            dt = 1e-4
+        
+        band_power = 0.0
+        psd_prev = 0.0
+        for fi in range(n_freq_pts):
+            freq = f_grid[fi]
+            real_A = 1.0
+            imag_A = 0.0
+            for k in range(psd_order):
+                angle = -2.0 * np.pi * freq * (k + 1) * dt
+                real_A -= phi_psd[k] * np.cos(angle)
+                imag_A -= phi_psd[k] * np.sin(angle)
+            
+            mag_sq = real_A * real_A + imag_A * imag_A
+            psd_curr = (2.0 * sigma_sq * dt) / mag_sq
+            
+            # Trapezoidal integration step
+            if fi > 0:
+                band_power += 0.5 * (psd_prev + psd_curr) * (f_grid[fi] - f_grid[fi-1])
+            psd_prev = psd_curr
+            
+        burg_powers[i] = band_power
+        
+    return ar_coeffs, burg_powers
+
+
+def compute_burg_features(
+    windows: np.ndarray,
+    ar_order: int = 5,
+    psd_order: int = 8,
+    f_low: float = 0.15,
+    f_high: float = 0.40,
+) -> dict[str, np.ndarray]:
+    """Extracts AR(order=5) coefficients and Burg PSD integrated power for a 2D batch of windows (M, W)."""
+    windows_arr = np.asarray(windows, dtype=np.float64)
+    
+    # Delegates calculation entirely to the compiled C-speed engine
+    ar_coeffs, burg_powers = _compute_burg_batch_numba(
+        windows_arr, ar_order, psd_order, f_low, f_high, 32
+    )
+
+    feats = {f"ar_{k+1}": ar_coeffs[:, k] for k in range(ar_order)}
+    feats["burg_power_hf"] = burg_powers
+    return feats
 
 # =============================================================================
 # 3. PIPELINE ORCHESTRATOR
@@ -299,17 +448,24 @@ def extract_hrv_features(
 
     # 2. Extracción modular de características
     rr_columns = {f"rr_{i+1}": X_ventanas[:, i] for i in range(window_size)}
+
     asymmetry_feats = compute_asymmetry_features(diffs)
     stats_feats = compute_statistical_features(X_ventanas, diffs)
     phase_space_feats = compute_phase_space_features(X_ventanas, tau=1)
 
-    # 3. Construcción final del DataFrame
+    # 3. Burg AR(5) and HF Band Power features (0.15 - 0.40 Hz, p=8)
+    burg_feats = compute_burg_features(
+    X_ventanas, ar_order=5, psd_order=8, f_low=0.15, f_high=0.40
+    )
+
+    # 4. Construcción final del DataFrame
     return pd.DataFrame(
         {
             **rr_columns,
             **asymmetry_feats,
             **stats_feats,
             **phase_space_feats,
+            **burg_feats,
             "target": y_target,
         }
     )
@@ -335,6 +491,12 @@ def _process_single_run(seed, percent, idx, original_serie, loaded_model, feats_
     ####################### Attached to modification later ################################################
     predictor = ExactARPacingPredictor(phi=phi_burg, sigma_sq=sigma_burg)
 
+    ages_table_path = 'ages_table.xlsx'
+    ages_table = pd.read_excel(ages_table_path)
+    age_weeks = ages_table['age-weeks'].loc[ages_table['code'] == subject].values[0]
+    age_years = age_weeks / 52.14
+    seq_mean_ar, seq_scale_ar = get_rr_reference(age_years)
+
     for i in range(30):
         if i == 0 and np.isnan(modified_serie[i]):
             modified_serie[i] = seq_mean  # Replace first NaN with mean reference
@@ -342,7 +504,7 @@ def _process_single_run(seed, percent, idx, original_serie, loaded_model, feats_
         elif np.isnan(modified_serie[i]) and i >= 1:
             # Use the last observed value for imputation
             next_rr_paced = predictor.forecast_next_rr(
-                modified_serie[:i], seq_mean, seq_scale, stochastic=True
+                modified_serie[:i], seq_mean_ar, seq_scale_ar, stochastic=True
             )
             modified_serie[i] = next_rr_paced
     #######################################################################################################
@@ -366,9 +528,9 @@ def _process_single_run(seed, percent, idx, original_serie, loaded_model, feats_
             # 4. MANUAL SCALING
             X_feats_step_scaled = (X_feats_step - feats_mean) / feats_scale
 
-            # X_rr_seq_step_scaled = (X_rr_seq_step - seq_mean) / seq_scale
+            X_rr_seq_step_scaled = (X_rr_seq_step - seq_mean) / seq_scale
             # scale the RR sequence using its own mean and scale of this window
-            X_rr_seq_step_scaled = (X_rr_seq_step - np.mean(X_rr_seq_step)) / np.std(X_rr_seq_step)
+            # X_rr_seq_step_scaled = (X_rr_seq_step - np.mean(X_rr_seq_step)) / np.std(X_rr_seq_step)
             
             # Reshape to 3D for the CNN-LSTM
             X_rr_seq_step_3d = X_rr_seq_step_scaled.reshape(1, 30, 1)
@@ -434,7 +596,7 @@ def evaluate_imputation_performance(original_serie, percents_to_eliminate, loade
     Returns:
         A aggregated Pandas DataFrame containing the results for every seed and percentage.
     """
-    seeds = [7, 101, 211, 317, 421]
+    seeds = [7] # , 101, 211, 317, 421
     print(f"Starting autoregressive imputation across {len(percents_to_eliminate)} thresholds and {len(seeds)} seeds using 4 cores...")
 
     # Ensure base directory exists
