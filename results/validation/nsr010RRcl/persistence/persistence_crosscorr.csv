@@ -1,0 +1,2 @@
+subject,model,n_beats,corrcoef_rr,corrcoef_drr
+nsr010RRcl,persistence,92588,0.938565,0.206212

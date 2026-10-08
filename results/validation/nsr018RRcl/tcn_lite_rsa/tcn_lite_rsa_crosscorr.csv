@@ -1,0 +1,2 @@
+subject,model,n_beats,corrcoef_rr,corrcoef_drr
+nsr018RRcl,tcn_lite_rsa,103203,0.927740,0.410601

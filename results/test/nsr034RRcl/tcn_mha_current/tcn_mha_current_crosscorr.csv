@@ -1,0 +1,2 @@
+subject,model,n_beats,corrcoef_rr,corrcoef_drr
+nsr034RRcl,tcn_mha_current,94279,0.977787,0.209492

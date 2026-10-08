@@ -1,0 +1,139 @@
+/app/david_neural_network/utils.py:370: UserWarning: series/4077.txt: 2 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4052.txt: 13 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4087.txt: 2 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4033.txt: 4 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4062.txt: 2 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4037.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4070.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4090.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4088.txt: 2 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4011.txt: 2 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4099.txt: 4 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4097.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4010.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4029.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4001.txt: 13 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4085.txt: 3 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4028.txt: 28 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4031.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4119.txt: 7 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4084.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4056.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4026.txt: 5 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4109.txt: 2 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4030.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4034.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4022.txt: 4 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4014.txt: 4 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4072.txt: 2 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4050.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4096.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4025.txt: 4 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4102.txt: 3 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4081.txt: 5 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4065.txt: 5 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4091.txt: 7 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4075.txt: 6 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4043.txt: 2 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4110.txt: 2 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4069.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4106.txt: 2 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4111.txt: 15 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4113.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4107.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4112.txt: 5 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4076.txt: 2 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4120.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4118.txt: 4 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4067.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4117.txt: 7 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:370: UserWarning: series/4114.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+Loading train/val subjects and running the streaming feature engine ...
+train: 142 subjects / 20755925 windows | val: 16 subjects / 1421225 windows
+
+=== gbdt_all: gbdt, 29 features, residual=True ===
+
+Permutation importance (val, RMSE increase in z units):
+ feature  importance  importance_std
+rls_pred      0.1181          0.0015
+  rr_dev      0.0513          0.0011
+drr_lag0      0.0358          0.0007
+   guzik      0.0284          0.0011
+      bp      0.0182          0.0004
+     ccm      0.0091          0.0004
+ rls_err      0.0080          0.0003
+   rmssd      0.0071          0.0012
+    nn20      0.0034          0.0007
+ rr_mean      0.0034          0.0005
+drr_lag2      0.0028          0.0005
+drr_lag1      0.0024          0.0004
+drr_lag3      0.0017          0.0001
+  rls_w1      0.0015          0.0001
+      rs      0.0011          0.0002
+drr_lag5      0.0011          0.0001
+ run_len      0.0010          0.0002
+drr_lag4      0.0010          0.0001
+drr_lag6      0.0007          0.0003
+drr_lag7      0.0007          0.0001
+ bp_prev      0.0006          0.0001
+  rls_w5      0.0006          0.0001
+  rls_w6      0.0006          0.0001
+  rls_w7      0.0005          0.0001
+  rls_w3      0.0004          0.0001
+  rls_w2      0.0002          0.0001
+  rls_w4      0.0001          0.0001
+   porta     -0.0001          0.0002
+  rls_w0     -0.0020          0.0010
+Highly correlated candidate pairs (|Spearman| > 0.9):
+       rmssd ~ nn20       +0.915
+gbdt_all: val RMSE 34.15 ms (RLS 37.14), skill 0.181, sign acc 0.680

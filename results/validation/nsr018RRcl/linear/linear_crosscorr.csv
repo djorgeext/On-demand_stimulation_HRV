@@ -1,0 +1,2 @@
+subject,model,n_beats,corrcoef_rr,corrcoef_drr
+nsr018RRcl,linear,103203,0.924095,0.351236

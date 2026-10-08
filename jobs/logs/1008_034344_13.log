@@ -1,0 +1,70 @@
+Loading 'val' subjects and running the streaming feature engine ...
+16 subjects, 1421225 windows
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1791431027.391686 1989987 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+W0000 00:00:1791431027.391750 1989987 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+W0000 00:00:1791431027.391753 1989987 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+W0000 00:00:1791431027.391756 1989987 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+2026-10-08 03:43:49.598102: E external/local_xla/xla/stream_executor/rocm/rocm_platform.cc:50] failed call to hipInit: HIP_ERROR_NoDevice
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+
+Open-loop evaluation ...
+      model   rmse  rmse_lo  rmse_hi    mae    p95  skill     r  sign_acc  amp_ratio  p_vs_rls_ar  params  macs_window  macs_stream  int8_weights_kb
+        gru 33.896   29.148   38.408 20.113 57.925  0.187 0.587     0.684      0.518        0.000    1825    26752.000         1696            1.800
+        mlp 34.599   29.780   39.361 20.565 59.503  0.170 0.559     0.679      0.531        0.000    1185     1136.000         1136            1.200
+   mlp_int8 34.746   29.877   39.495 20.600 59.582  0.167 0.554     0.678      0.534        0.000    1185     1136.000         1136            1.200
+   gru_int8 34.814   30.227   39.251 21.200 59.702  0.165 0.550     0.654      0.540        0.011    1825    26752.000         1696            1.800
+     rls_ar 37.143   31.875   42.394 21.526 62.633  0.109 0.469     0.673      0.587          NaN       0          NaN          152            0.000
+persistence 41.698   34.890   48.452 23.488 70.000  0.000   NaN     0.000      0.000        0.000       0          NaN            0            0.000
+   ema_mean 43.585   37.638   48.647 27.752 82.612 -0.045 0.333     0.591      0.784        0.000       0          NaN           30            0.000
+
+RMSE (ms) per interval:
+interval     1082-1499  1499-1708  1708-2021  2021-2125  2125-2699  2699-3220  3220-3481  3481-3689  3689-3900
+model                                                                                                         
+gru              28.92      47.63      29.40      33.31      22.21      45.39      30.43      41.70      17.34
+mlp              29.16      48.68      29.67      33.66      22.42      46.13      31.21      43.07      17.78
+mlp_int8         29.18      48.71      29.83      33.75      22.45      46.17      31.88      43.12      17.88
+gru_int8         29.83      48.32      30.55      34.35      23.44      46.09      31.54      42.43      18.63
+rls_ar           30.15      51.88      32.12      35.65      23.07      47.44      35.77      46.37      19.48
+persistence      32.87      61.31      33.65      37.65      25.50      55.75      37.91      54.46      20.62
+ema_mean         34.14      59.18      46.15      51.13      31.07      49.95      38.95      46.27      20.60
+
+Closed-loop imputation (first 5000 beats per subject) ...
+  closed loop persistence: 6s
+  closed loop ema_mean: 7s
+  closed loop rls_ar: 6s
+  closed loop gru: 481s
+  closed loop gru_int8: 42s
+  closed loop mlp: 140s
+  closed loop mlp_int8: 18s
+      model  percent   rmse    mae    r2  corr_series  hf_power_log2  hf_peak_log2  hf_peak_shift_abs  rsa_invented  rsa_displaced  rsa_lost
+        gru    0.100 26.400 17.827 0.854        0.991         -0.030        -0.033              0.048         0.000          0.021     0.000
+        mlp    0.100 27.019 18.171 0.847        0.991         -0.020        -0.025              0.048         0.000          0.021     0.000
+   mlp_int8    0.100 27.073 18.216 0.846        0.991         -0.017        -0.024              0.052         0.000          0.021     0.000
+   gru_int8    0.100 28.039 19.432 0.819        0.990          0.050        -0.048              0.051         0.000          0.021     0.000
+     rls_ar    0.100 28.881 19.015 0.825        0.990         -0.007        -0.020              0.057         0.000          0.021     0.000
+persistence    0.100 31.282 20.010 0.789        0.988          0.008        -0.053              0.044         0.000          0.000     0.021
+   ema_mean    0.100 33.893 23.669 0.759        0.987          0.091        -0.069              0.070         0.000          0.021     0.000
+        gru    0.300 29.416 19.837 0.822        0.973         -0.137         0.014              0.065         0.000          0.042     0.000
+        mlp    0.300 30.010 20.169 0.814        0.972         -0.096         0.019              0.078         0.000          0.042     0.000
+   mlp_int8    0.300 30.064 20.220 0.813        0.971         -0.090         0.021              0.074         0.000          0.042     0.000
+   gru_int8    0.300 31.377 21.659 0.776        0.966          0.051        -0.006              0.070         0.000          0.042     0.000
+     rls_ar    0.300 33.113 21.408 0.775        0.966         -0.063         0.076              0.079         0.062          0.042     0.000
+persistence    0.300 33.646 21.638 0.765        0.965         -0.056        -0.098              0.085         0.000          0.000     0.104
+   ema_mean    0.300 35.890 25.240 0.733        0.959          0.137        -0.110              0.082         0.000          0.000     0.062
+        gru    0.500 33.166 22.457 0.777        0.941         -0.314        -0.069              0.073         0.000          0.021     0.042
+        mlp    0.500 33.699 22.771 0.770        0.939         -0.223         0.012              0.065         0.021          0.021     0.000
+   mlp_int8    0.500 33.801 22.821 0.768        0.939         -0.212         0.002              0.069         0.021          0.021     0.021
+   gru_int8    0.500 35.339 24.558 0.723        0.927         -0.030        -0.051              0.062         0.021          0.042     0.021
+persistence    0.500 37.133 24.092 0.717        0.928         -0.229        -0.144              0.070         0.000          0.000     0.125
+     rls_ar    0.500 37.475 24.226 0.721        0.927         -0.129         0.184              0.073         0.125          0.021     0.021
+   ema_mean    0.500 38.403 27.186 0.697        0.919          0.029        -0.160              0.083         0.000          0.000     0.125
+        gru    0.800 41.490 29.216 0.647        0.834         -0.992        -0.046              0.076         0.021          0.000     0.083
+        mlp    0.800 42.106 29.319 0.638        0.831         -0.714         0.211              0.074         0.167          0.042     0.021
+   mlp_int8    0.800 42.247 29.349 0.635        0.829         -0.693         0.228              0.058         0.271          0.042     0.021
+   ema_mean    0.800 43.791 31.627 0.612        0.814         -0.596        -0.202              0.088         0.000          0.000     0.125
+   gru_int8    0.800 45.073 32.774 0.557        0.799         -0.392         0.140              0.073         0.125          0.000     0.083
+persistence    0.800 46.419 31.212 0.561        0.813         -0.866        -0.178              0.097         0.000          0.000     0.125
+     rls_ar    0.800 53.731 33.164 0.351        0.757          0.403         1.666              0.088         0.750          0.083     0.000
+
+Results written to results/round2_gru/

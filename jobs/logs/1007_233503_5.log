@@ -1,0 +1,84 @@
+Loading 'val' subjects and running the streaming feature engine ...
+16 subjects, 1421225 windows
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1791416106.548273 1234031 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+W0000 00:00:1791416106.548334 1234031 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+W0000 00:00:1791416106.548338 1234031 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+W0000 00:00:1791416106.548342 1234031 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+2026-10-07 23:35:08.729809: E external/local_xla/xla/stream_executor/rocm/rocm_platform.cc:50] failed call to hipInit: HIP_ERROR_NoDevice
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+
+Open-loop evaluation ...
+            model   rmse  rmse_lo  rmse_hi    mae    p95  skill     r  sign_acc  amp_ratio  p_vs_rls_ar  params  macs_window  macs_stream  int8_weights_kb
+          mlp_rsa 34.208   29.434   38.886 20.359 58.819  0.180 0.574     0.681      0.541        0.000    1313     1264.000         1264            1.300
+     mlp_rsa_int8 34.342   29.583   39.013 20.453 58.965  0.176 0.569     0.677      0.543        0.000    1313     1264.000         1264            1.300
+         mlp_nobp 34.452   29.627   39.164 20.554 59.588  0.174 0.566     0.680      0.535        0.000    1121     1072.000         1072            1.100
+    mlp_nobp_int8 34.564   29.735   39.289 20.627 59.651  0.171 0.562     0.677      0.532        0.000    1121     1072.000         1072            1.100
+     micro_tcn_f8 34.728   29.826   39.536 20.608 59.570  0.167 0.556     0.678      0.526        0.000    1137    11616.000          944            1.100
+micro_tcn_f8_int8 34.946   30.070   39.728 20.846 59.899  0.162 0.548     0.668      0.528        0.001    1137    11616.000          944            1.100
+           rls_ar 37.143   31.875   42.394 21.526 62.633  0.109 0.469     0.673      0.587          NaN       0          NaN          152            0.000
+      persistence 41.698   34.890   48.452 23.488 70.000  0.000   NaN     0.000      0.000        0.000       0          NaN            0            0.000
+         ema_mean 43.585   37.638   48.647 27.752 82.612 -0.045 0.333     0.591      0.784        0.000       0          NaN           30            0.000
+
+RMSE (ms) per interval:
+interval           1082-1499  1499-1708  1708-2021  2021-2125  2125-2699  2699-3220  3220-3481  3481-3689  3689-3900
+model                                                                                                               
+mlp_rsa                29.03      48.23      29.59      33.65      22.28      45.42      30.52      42.37      17.46
+mlp_rsa_int8           29.10      48.26      29.67      33.73      22.36      45.48      30.99      42.49      17.57
+mlp_nobp               29.09      48.72      29.80      33.75      22.34      45.53      30.80      42.81      17.59
+mlp_nobp_int8          29.14      48.78      29.88      33.84      22.42      45.58      31.14      42.91      17.66
+micro_tcn_f8           29.22      49.16      29.86      33.65      22.43      46.24      31.15      43.31      17.88
+micro_tcn_f8_int8      29.41      49.30      30.11      33.88      22.68      46.38      31.60      43.43      18.18
+rls_ar                 30.15      51.88      32.12      35.65      23.07      47.44      35.77      46.37      19.48
+persistence            32.87      61.31      33.65      37.65      25.50      55.75      37.91      54.46      20.62
+ema_mean               34.14      59.18      46.15      51.13      31.07      49.95      38.95      46.27      20.60
+
+Closed-loop imputation (first 5000 beats per subject) ...
+  closed loop persistence: 5s
+  closed loop ema_mean: 7s
+  closed loop rls_ar: 5s
+  closed loop micro_tcn_f8: 237s
+  closed loop micro_tcn_f8_int8: 33s
+  closed loop mlp_nobp: 140s
+  closed loop mlp_nobp_int8: 18s
+  closed loop mlp_rsa: 139s
+  closed loop mlp_rsa_int8: 18s
+            model  percent   rmse    mae    r2  corr_series  hf_power_log2  hf_peak_log2  hf_peak_shift_abs  rsa_invented  rsa_displaced  rsa_lost
+          mlp_rsa    0.100 26.836 17.960 0.847        0.991         -0.040        -0.021              0.040         0.000          0.021     0.000
+     micro_tcn_f8    0.100 26.948 18.103 0.848        0.991         -0.027        -0.029              0.042         0.000          0.042     0.000
+     mlp_rsa_int8    0.100 26.949 18.084 0.845        0.991         -0.035        -0.025              0.040         0.000          0.021     0.000
+         mlp_nobp    0.100 27.001 18.100 0.847        0.991         -0.028        -0.019              0.045         0.000          0.021     0.000
+    mlp_nobp_int8    0.100 27.115 18.225 0.845        0.991         -0.023        -0.024              0.047         0.000          0.021     0.000
+micro_tcn_f8_int8    0.100 27.250 18.398 0.843        0.991         -0.019        -0.030              0.038         0.000          0.042     0.000
+           rls_ar    0.100 28.881 19.015 0.825        0.990         -0.007        -0.020              0.057         0.000          0.021     0.000
+      persistence    0.100 31.282 20.010 0.789        0.988          0.008        -0.053              0.044         0.000          0.000     0.021
+         ema_mean    0.100 33.893 23.669 0.759        0.987          0.091        -0.069              0.070         0.000          0.021     0.000
+          mlp_rsa    0.300 29.710 19.998 0.818        0.972         -0.158        -0.000              0.081         0.000          0.042     0.000
+     mlp_rsa_int8    0.300 29.816 20.116 0.816        0.972         -0.146         0.005              0.081         0.000          0.042     0.000
+         mlp_nobp    0.300 29.869 20.094 0.817        0.972         -0.121         0.023              0.076         0.000          0.042     0.000
+     micro_tcn_f8    0.300 29.885 20.128 0.817        0.972         -0.109         0.015              0.081         0.000          0.042     0.000
+    mlp_nobp_int8    0.300 29.994 20.211 0.814        0.972         -0.110         0.018              0.083         0.000          0.042     0.000
+micro_tcn_f8_int8    0.300 30.199 20.435 0.812        0.971         -0.086         0.014              0.081         0.000          0.042     0.000
+           rls_ar    0.300 33.113 21.408 0.775        0.966         -0.063         0.076              0.079         0.062          0.042     0.000
+      persistence    0.300 33.646 21.638 0.765        0.965         -0.056        -0.098              0.085         0.000          0.000     0.104
+         ema_mean    0.300 35.890 25.240 0.733        0.959          0.137        -0.110              0.082         0.000          0.000     0.062
+          mlp_rsa    0.500 33.388 22.545 0.775        0.940         -0.346        -0.054              0.058         0.000          0.021     0.042
+     mlp_rsa_int8    0.500 33.525 22.676 0.773        0.940         -0.326        -0.058              0.081         0.000          0.021     0.042
+         mlp_nobp    0.500 33.602 22.679 0.772        0.940         -0.266         0.006              0.068         0.021          0.021     0.042
+     micro_tcn_f8    0.500 33.623 22.704 0.772        0.940         -0.247        -0.014              0.067         0.000          0.042     0.021
+    mlp_nobp_int8    0.500 33.685 22.773 0.771        0.939         -0.250         0.010              0.069         0.021          0.021     0.042
+micro_tcn_f8_int8    0.500 33.929 23.004 0.767        0.938         -0.213        -0.014              0.074         0.000          0.021     0.042
+      persistence    0.500 37.133 24.092 0.717        0.928         -0.229        -0.144              0.070         0.000          0.000     0.125
+           rls_ar    0.500 37.475 24.226 0.721        0.927         -0.129         0.184              0.073         0.125          0.021     0.021
+         ema_mean    0.500 38.403 27.186 0.697        0.919          0.029        -0.160              0.083         0.000          0.000     0.125
+micro_tcn_f8_int8    0.800 42.548 29.766 0.631        0.826         -0.695         0.097              0.086         0.125          0.042     0.042
+    mlp_nobp_int8    0.800 42.944 29.838 0.622        0.825         -0.701         0.114              0.066         0.104          0.042     0.042
+         mlp_nobp    0.800 42.997 29.801 0.620        0.824         -0.721         0.101              0.074         0.104          0.000     0.062
+     micro_tcn_f8    0.800 43.586 30.131 0.612        0.820         -0.688         0.151              0.085         0.167          0.062     0.021
+         ema_mean    0.800 43.791 31.627 0.612        0.814         -0.596        -0.202              0.088         0.000          0.000     0.125
+     mlp_rsa_int8    0.800 43.912 30.231 0.600        0.816         -0.789        -0.032              0.097         0.021          0.000     0.104
+          mlp_rsa    0.800 44.457 30.458 0.588        0.813         -0.773        -0.039              0.088         0.062          0.000     0.104
+      persistence    0.800 46.419 31.212 0.561        0.813         -0.866        -0.178              0.097         0.000          0.000     0.125
+           rls_ar    0.800 53.731 33.164 0.351        0.757          0.403         1.666              0.088         0.750          0.083     0.000
+
+Results written to results/round2_int8fix/

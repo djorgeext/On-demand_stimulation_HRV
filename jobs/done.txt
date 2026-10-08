@@ -1,0 +1,17 @@
+1007_214638_1 HIP_VISIBLE_DEVICES=0 .venv/bin/python -u train.py --models mlp --features tab_nobp --tag mlp_nobp
+1007_215140_2 HIP_VISIBLE_DEVICES=0 .venv/bin/python -u train.py --models micro_tcn_f8 --tag micro_tcn_f8
+1007_222751_3 HIP_VISIBLE_DEVICES=0 .venv/bin/python -u train.py --models mlp --features tab_rsa --tag mlp_rsa
+1007_223640_4 HIP_VISIBLE_DEVICES=-1 .venv/bin/python -u evaluate.py --runs runs/mlp runs/micro_tcn runs/tcn_lite runs/mlp_nobp runs/micro_tcn_f8 runs/mlp_rsa --legacy_model tcn_attention_hrv_best.keras --legacy_h5 hrv_dataset.h5 --split val --int8 --closed_loop --percents 0.1 0.3 0.5 0.8 --seeds 7 101 211 --out results/round2
+1007_233503_5 HIP_VISIBLE_DEVICES=-1 .venv/bin/python -u evaluate.py --runs runs/mlp_nobp runs/micro_tcn_f8 runs/mlp_rsa --split val --int8 --closed_loop --percents 0.1 0.3 0.5 0.8 --seeds 7 101 211 --out results/round2_int8fix
+1007_234641_6 HIP_VISIBLE_DEVICES=0 .venv/bin/python -u train.py --models gru --steps_per_execution 64 --epoch_samples 2000000 --epochs 90 --tag gru
+1008_010647_7 HIP_VISIBLE_DEVICES=0 .venv/bin/python -u train.py --models tcn_lite --init_from runs/tcn_lite --dad_filler runs/tcn_lite --dad_share 0.5 --lr 3e-4 --epochs 30 --patience 6 --tag tcn_lite_dad
+1008_020927_9 HIP_VISIBLE_DEVICES=0 .venv/bin/python -u train.py --models tcn_lite --init_from runs/tcn_lite --dad_share 0 --lr 3e-4 --epochs 30 --patience 6 --tag tcn_lite_ft
+1008_021653_10 HIP_VISIBLE_DEVICES=0 .venv/bin/python -u train.py --models tcn_lite --init_from runs/tcn_lite --dad_filler runs/tcn_lite --dad_share 0.5 --lr 3e-4 --epochs 30 --patience 6 --tag tcn_lite_dad
+1008_024933_11 HIP_VISIBLE_DEVICES=0 .venv/bin/python -u train.py --models micro_tcn --init_from runs/micro_tcn --dad_filler runs/micro_tcn --dad_share 0.5 --lr 3e-4 --epochs 30 --patience 6 --tag micro_tcn_dad
+1008_031230_12 HIP_VISIBLE_DEVICES=-1 .venv/bin/python -u evaluate.py --runs runs/tcn_lite runs/micro_tcn runs/tcn_lite_dad runs/micro_tcn_dad runs/tcn_lite_ft --split val --int8 --closed_loop --percents 0.1 0.3 0.5 0.8 --seeds 7 101 211 --out results/round3
+1008_034344_13 HIP_VISIBLE_DEVICES=-1 .venv/bin/python -u evaluate.py --runs runs/mlp runs/gru --split val --int8 --closed_loop --percents 0.1 0.3 0.5 0.8 --seeds 7 101 211 --out results/round2_gru
+1008_041654_14 HIP_VISIBLE_DEVICES=0 .venv/bin/python -u train.py --models tcn_lite --features seq_rsa --tag tcn_lite_rsa
+1008_045840_15 HIP_VISIBLE_DEVICES=0 .venv/bin/python -u train.py --models micro_tcn --features seq_rsa --tag micro_tcn_rsa
+1008_054656_16 HIP_VISIBLE_DEVICES=0 .venv/bin/python -u train.py --models tcn_lite --features seq_rsa --init_from runs/tcn_lite --lr 3e-4 --epochs 30 --patience 6 --tag tcn_lite_rsa_ws
+1008_055715_17 HIP_VISIBLE_DEVICES=0 .venv/bin/python -u train.py --models micro_tcn --features seq_rsa --init_from runs/micro_tcn --lr 3e-4 --epochs 30 --patience 6 --tag micro_tcn_rsa_ws
+1008_062604_18 HIP_VISIBLE_DEVICES=-1 .venv/bin/python -u evaluate.py --runs runs/tcn_lite_ft runs/tcn_lite runs/micro_tcn runs/tcn_lite_dad runs/micro_tcn_dad runs/tcn_lite_rsa runs/micro_tcn_rsa runs/tcn_lite_rsa_ws runs/micro_tcn_rsa_ws --split val --int8 --closed_loop --percents 0.1 0.3 0.5 0.8 --seeds 7 101 211 --out results/round4

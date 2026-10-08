@@ -1,0 +1,2 @@
+subject,model,n_beats,corrcoef_rr,corrcoef_drr
+nsr013RRcl,gru,109863,0.981649,0.245884

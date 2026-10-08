@@ -1,0 +1,2 @@
+subject,model,n_beats,corrcoef_rr,corrcoef_drr
+nsr041RRcl,tcn_lite_ft_int8,97364,0.946665,0.273707

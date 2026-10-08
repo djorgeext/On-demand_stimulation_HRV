@@ -1,0 +1,1 @@
+1008_020854_8 rc=143 HIP_VISIBLE_DEVICES=0 .venv/bin/python -u train.py --models micro_tcn --init_from runs/micro_tcn --dad_filler runs/micro_tcn --dad_share 0.5 --lr 3e-4 --epochs 30 --patience 6 --tag micro_tcn_dad

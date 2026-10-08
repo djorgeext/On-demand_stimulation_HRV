@@ -1,0 +1,2 @@
+subject,model,n_beats,corrcoef_rr,corrcoef_drr
+003,ema_mean,108150,0.898775,0.259363

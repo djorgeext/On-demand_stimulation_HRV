@@ -1,0 +1,396 @@
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1791318754.597058  496033 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+W0000 00:00:1791318754.597208  496033 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+W0000 00:00:1791318754.597214  496033 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+W0000 00:00:1791318754.597221  496033 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+Loading train/val subjects and running the streaming feature engine ...
+/app/david_neural_network/utils.py:369: UserWarning: series/4077.txt: 2 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4052.txt: 13 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4087.txt: 2 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4033.txt: 4 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4062.txt: 2 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4037.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4070.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4090.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4088.txt: 2 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4011.txt: 2 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4099.txt: 4 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4097.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4010.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4029.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4001.txt: 13 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4085.txt: 3 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4028.txt: 28 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4031.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4119.txt: 7 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4084.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4056.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4026.txt: 5 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4109.txt: 2 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4030.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4034.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4022.txt: 4 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4014.txt: 4 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4072.txt: 2 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4050.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4096.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4025.txt: 4 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4102.txt: 3 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4081.txt: 5 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4065.txt: 5 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4091.txt: 7 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4075.txt: 6 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4043.txt: 2 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4110.txt: 2 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4069.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4106.txt: 2 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4111.txt: 15 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4113.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4107.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4112.txt: 5 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4076.txt: 2 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4120.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4118.txt: 4 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4067.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4117.txt: 7 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+/app/david_neural_network/utils.py:369: UserWarning: series/4114.txt: 1 RR values outside (150.0, 3000.0) ms (kept as-is)
+  warnings.warn(f"{path}: {n_bad} RR values outside {RR_RANGE_MS} ms (kept as-is)")
+train: 142 subjects / 20755925 windows | val: 16 subjects / 1421225 windows
+
+=== linear: linear, 9 features, residual=False ===
+linear: val RMSE 40.46 ms (RLS 37.14), skill 0.030, sign acc 0.605
+
+=== mlp: mlp, 19 features, residual=True ===
+I0000 00:00:1791318795.579832  496033 gpu_device.cc:2019] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 61334 MB memory:  -> device: 0, name: AMD Instinct MI210, pci bus id: 0000:03:00.0
+I0000 00:00:1791318795.605034  496033 gpu_device.cc:2019] Created device /job:localhost/replica:0/task:0/device:GPU:1 with 21712 MB memory:  -> device: 1, name: AMD Instinct MI210, pci bus id: 0000:83:00.0
+Epoch 1/100
+2026-10-06 20:33:21.243616: E tensorflow/core/framework/node_def_util.cc:680] NodeDef mentions attribute use_unbounded_threadpool which is not in the op definition: Op<name=MapDataset; signature=input_dataset:variant, other_arguments: -> handle:variant; attr=f:func; attr=Targuments:list(type),min=0; attr=output_types:list(type),min=1; attr=output_shapes:list(shape),min=1; attr=use_inter_op_parallelism:bool,default=true; attr=preserve_cardinality:bool,default=false; attr=force_synchronous:bool,default=false; attr=metadata:string,default=""> This may be expected if your graph generating binary is newer  than this binary. Unknown attributes will be ignored. NodeDef: {{node ParallelMapDatasetV2/_15}}
+2026-10-06 20:36:08.208797: E tensorflow/core/framework/node_def_util.cc:680] NodeDef mentions attribute use_unbounded_threadpool which is not in the op definition: Op<name=MapDataset; signature=input_dataset:variant, other_arguments: -> handle:variant; attr=f:func; attr=Targuments:list(type),min=0; attr=output_types:list(type),min=1; attr=output_shapes:list(shape),min=1; attr=use_inter_op_parallelism:bool,default=true; attr=preserve_cardinality:bool,default=false; attr=force_synchronous:bool,default=false; attr=metadata:string,default=""> This may be expected if your graph generating binary is newer  than this binary. Unknown attributes will be ignored. NodeDef: {{node ParallelMapDatasetV2/_15}}
+40539/40539 - 173s - 4ms/step - loss: 0.2066 - val_loss: 0.2585 - learning_rate: 0.0010
+Epoch 2/100
+40539/40539 - 161s - 4ms/step - loss: 0.2034 - val_loss: 0.2581 - learning_rate: 0.0010
+Epoch 3/100
+40539/40539 - 164s - 4ms/step - loss: 0.2028 - val_loss: 0.2587 - learning_rate: 0.0010
+Epoch 4/100
+40539/40539 - 162s - 4ms/step - loss: 0.2025 - val_loss: 0.2584 - learning_rate: 0.0010
+Epoch 5/100
+40539/40539 - 177s - 4ms/step - loss: 0.2024 - val_loss: 0.2578 - learning_rate: 0.0010
+Epoch 6/100
+40539/40539 - 210s - 5ms/step - loss: 0.2023 - val_loss: 0.2574 - learning_rate: 0.0010
+Epoch 7/100
+40539/40539 - 205s - 5ms/step - loss: 0.2022 - val_loss: 0.2574 - learning_rate: 0.0010
+Epoch 8/100
+40539/40539 - 211s - 5ms/step - loss: 0.2021 - val_loss: 0.2569 - learning_rate: 0.0010
+Epoch 9/100
+40539/40539 - 207s - 5ms/step - loss: 0.2020 - val_loss: 0.2573 - learning_rate: 0.0010
+Epoch 10/100
+40539/40539 - 205s - 5ms/step - loss: 0.2019 - val_loss: 0.2572 - learning_rate: 0.0010
+Epoch 11/100
+40539/40539 - 211s - 5ms/step - loss: 0.2018 - val_loss: 0.2572 - learning_rate: 0.0010
+Epoch 12/100
+40539/40539 - 214s - 5ms/step - loss: 0.2014 - val_loss: 0.2570 - learning_rate: 5.0000e-04
+Epoch 13/100
+40539/40539 - 207s - 5ms/step - loss: 0.2014 - val_loss: 0.2569 - learning_rate: 5.0000e-04
+Epoch 14/100
+40539/40539 - 202s - 5ms/step - loss: 0.2013 - val_loss: 0.2570 - learning_rate: 5.0000e-04
+Epoch 15/100
+40539/40539 - 209s - 5ms/step - loss: 0.2011 - val_loss: 0.2571 - learning_rate: 2.5000e-04
+Epoch 16/100
+40539/40539 - 199s - 5ms/step - loss: 0.2011 - val_loss: 0.2572 - learning_rate: 2.5000e-04
+Epoch 17/100
+40539/40539 - 208s - 5ms/step - loss: 0.2011 - val_loss: 0.2572 - learning_rate: 2.5000e-04
+Epoch 18/100
+40539/40539 - 207s - 5ms/step - loss: 0.2010 - val_loss: 0.2574 - learning_rate: 1.2500e-04
+2026-10-06 21:32:16.592585: E tensorflow/core/framework/node_def_util.cc:680] NodeDef mentions attribute use_unbounded_threadpool which is not in the op definition: Op<name=MapDataset; signature=input_dataset:variant, other_arguments: -> handle:variant; attr=f:func; attr=Targuments:list(type),min=0; attr=output_types:list(type),min=1; attr=output_shapes:list(shape),min=1; attr=use_inter_op_parallelism:bool,default=true; attr=preserve_cardinality:bool,default=false; attr=force_synchronous:bool,default=false; attr=metadata:string,default=""> This may be expected if your graph generating binary is newer  than this binary. Unknown attributes will be ignored. NodeDef: {{node ParallelMapDatasetV2/_14}}
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1791322337.525673  496033 tf_tfl_flatbuffer_helpers.cc:365] Ignored output_format.
+W0000 00:00:1791322337.525761  496033 tf_tfl_flatbuffer_helpers.cc:368] Ignored drop_control_dependency.
+I0000 00:00:1791322337.535761  496033 mlir_graph_optimization_pass.cc:425] MLIR V1 optimization pass is not enabled
+fully_quantize: 0, inference_type: 6, input_inference_type: INT8, output_inference_type: INT8
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+mlp: val RMSE 34.60 ms (RLS 37.14), skill 0.170, sign acc 0.679 | int8 RMSE 34.29 vs float 34.18 (subsample)
+
+=== gbdt: gbdt, 19 features, residual=True ===
+
+Permutation importance (val, RMSE increase in z units):
+ feature  importance  importance_std
+rls_pred      0.0910          0.0024
+   guzik      0.0402          0.0009
+  rr_dev      0.0372          0.0014
+drr_lag0      0.0341          0.0012
+      bp      0.0230          0.0003
+ rls_err      0.0155          0.0002
+     ccm      0.0106          0.0007
+ rr_mean      0.0031          0.0011
+drr_lag1      0.0021          0.0004
+drr_lag2      0.0020          0.0002
+drr_lag3      0.0016          0.0002
+   rmssd      0.0008          0.0013
+ bp_prev      0.0008          0.0002
+      rs      0.0007          0.0004
+drr_lag5      0.0006          0.0001
+drr_lag6      0.0005          0.0003
+drr_lag7      0.0004          0.0001
+drr_lag4      0.0004          0.0002
+ run_len     -0.0007          0.0003
+Highly correlated candidate pairs (|Spearman| > 0.9):
+       rmssd ~ nn20       +0.916
+gbdt: val RMSE 34.19 ms (RLS 37.14), skill 0.180, sign acc 0.679
+
+=== micro_tcn: micro_tcn, 9 features, residual=True ===
+Epoch 1/100
+2026-10-06 21:34:50.701452: E tensorflow/core/framework/node_def_util.cc:680] NodeDef mentions attribute use_unbounded_threadpool which is not in the op definition: Op<name=MapDataset; signature=input_dataset:variant, other_arguments: -> handle:variant; attr=f:func; attr=Targuments:list(type),min=0; attr=output_types:list(type),min=1; attr=output_shapes:list(shape),min=1; attr=use_inter_op_parallelism:bool,default=true; attr=preserve_cardinality:bool,default=false; attr=force_synchronous:bool,default=false; attr=metadata:string,default=""> This may be expected if your graph generating binary is newer  than this binary. Unknown attributes will be ignored. NodeDef: {{node ParallelMapDatasetV2/_16}}
+2026-10-06 21:49:15.826829: E tensorflow/core/framework/node_def_util.cc:680] NodeDef mentions attribute use_unbounded_threadpool which is not in the op definition: Op<name=MapDataset; signature=input_dataset:variant, other_arguments: -> handle:variant; attr=f:func; attr=Targuments:list(type),min=0; attr=output_types:list(type),min=1; attr=output_shapes:list(shape),min=1; attr=use_inter_op_parallelism:bool,default=true; attr=preserve_cardinality:bool,default=false; attr=force_synchronous:bool,default=false; attr=metadata:string,default=""> This may be expected if your graph generating binary is newer  than this binary. Unknown attributes will be ignored. NodeDef: {{node ParallelMapDatasetV2/_16}}
+40539/40539 - 881s - 22ms/step - loss: 0.2065 - val_loss: 0.2550 - learning_rate: 0.0010
+Epoch 2/100
+40539/40539 - 879s - 22ms/step - loss: 0.2025 - val_loss: 0.2522 - learning_rate: 0.0010
+Epoch 3/100
+40539/40539 - 886s - 22ms/step - loss: 0.2015 - val_loss: 0.2513 - learning_rate: 0.0010
+Epoch 4/100
+40539/40539 - 872s - 22ms/step - loss: 0.2010 - val_loss: 0.2513 - learning_rate: 0.0010
+Epoch 5/100
+40539/40539 - 869s - 21ms/step - loss: 0.2006 - val_loss: 0.2514 - learning_rate: 0.0010
+Epoch 6/100
+40539/40539 - 862s - 21ms/step - loss: 0.2003 - val_loss: 0.2499 - learning_rate: 0.0010
+Epoch 7/100
+40539/40539 - 867s - 21ms/step - loss: 0.2001 - val_loss: 0.2489 - learning_rate: 0.0010
+Epoch 8/100
+40539/40539 - 867s - 21ms/step - loss: 0.2000 - val_loss: 0.2485 - learning_rate: 0.0010
+Epoch 9/100
+40539/40539 - 871s - 21ms/step - loss: 0.1999 - val_loss: 0.2478 - learning_rate: 0.0010
+Epoch 10/100
+40539/40539 - 866s - 21ms/step - loss: 0.1998 - val_loss: 0.2485 - learning_rate: 0.0010
+Epoch 11/100
+40539/40539 - 866s - 21ms/step - loss: 0.1997 - val_loss: 0.2484 - learning_rate: 0.0010
+Epoch 12/100
+40539/40539 - 866s - 21ms/step - loss: 0.1996 - val_loss: 0.2483 - learning_rate: 0.0010
+Epoch 13/100
+40539/40539 - 865s - 21ms/step - loss: 0.1990 - val_loss: 0.2474 - learning_rate: 5.0000e-04
+Epoch 14/100
+40539/40539 - 865s - 21ms/step - loss: 0.1989 - val_loss: 0.2469 - learning_rate: 5.0000e-04
+Epoch 15/100
+40539/40539 - 867s - 21ms/step - loss: 0.1989 - val_loss: 0.2472 - learning_rate: 5.0000e-04
+Epoch 16/100
+40539/40539 - 868s - 21ms/step - loss: 0.1989 - val_loss: 0.2471 - learning_rate: 5.0000e-04
+Epoch 17/100
+40539/40539 - 870s - 21ms/step - loss: 0.1989 - val_loss: 0.2472 - learning_rate: 5.0000e-04
+Epoch 18/100
+40539/40539 - 866s - 21ms/step - loss: 0.1985 - val_loss: 0.2462 - learning_rate: 2.5000e-04
+Epoch 19/100
+40539/40539 - 866s - 21ms/step - loss: 0.1985 - val_loss: 0.2462 - learning_rate: 2.5000e-04
+Epoch 20/100
+40539/40539 - 865s - 21ms/step - loss: 0.1985 - val_loss: 0.2461 - learning_rate: 2.5000e-04
+Epoch 21/100
+40539/40539 - 864s - 21ms/step - loss: 0.1985 - val_loss: 0.2460 - learning_rate: 2.5000e-04
+Epoch 22/100
+40539/40539 - 864s - 21ms/step - loss: 0.1985 - val_loss: 0.2462 - learning_rate: 2.5000e-04
+Epoch 23/100
+40539/40539 - 864s - 21ms/step - loss: 0.1984 - val_loss: 0.2459 - learning_rate: 2.5000e-04
+Epoch 24/100
+40539/40539 - 865s - 21ms/step - loss: 0.1984 - val_loss: 0.2462 - learning_rate: 2.5000e-04
+Epoch 25/100
+40539/40539 - 865s - 21ms/step - loss: 0.1984 - val_loss: 0.2460 - learning_rate: 2.5000e-04
+Epoch 26/100
+40539/40539 - 869s - 21ms/step - loss: 0.1984 - val_loss: 0.2461 - learning_rate: 2.5000e-04
+Epoch 27/100
+40539/40539 - 868s - 21ms/step - loss: 0.1982 - val_loss: 0.2457 - learning_rate: 1.2500e-04
+Epoch 28/100
+40539/40539 - 867s - 21ms/step - loss: 0.1982 - val_loss: 0.2457 - learning_rate: 1.2500e-04
+Epoch 29/100
+40539/40539 - 869s - 21ms/step - loss: 0.1982 - val_loss: 0.2457 - learning_rate: 1.2500e-04
+Epoch 30/100
+40539/40539 - 870s - 21ms/step - loss: 0.1982 - val_loss: 0.2456 - learning_rate: 1.2500e-04
+Epoch 31/100
+40539/40539 - 877s - 22ms/step - loss: 0.1981 - val_loss: 0.2457 - learning_rate: 6.2500e-05
+Epoch 32/100
+40539/40539 - 868s - 21ms/step - loss: 0.1981 - val_loss: 0.2456 - learning_rate: 6.2500e-05
+Epoch 33/100
+40539/40539 - 867s - 21ms/step - loss: 0.1981 - val_loss: 0.2456 - learning_rate: 6.2500e-05
+Epoch 34/100
+40539/40539 - 865s - 21ms/step - loss: 0.1981 - val_loss: 0.2456 - learning_rate: 6.2500e-05
+Epoch 35/100
+40539/40539 - 865s - 21ms/step - loss: 0.1981 - val_loss: 0.2456 - learning_rate: 6.2500e-05
+Epoch 36/100
+40539/40539 - 866s - 21ms/step - loss: 0.1981 - val_loss: 0.2458 - learning_rate: 3.1250e-05
+Epoch 37/100
+40539/40539 - 867s - 21ms/step - loss: 0.1981 - val_loss: 0.2458 - learning_rate: 3.1250e-05
+Epoch 38/100
+40539/40539 - 867s - 21ms/step - loss: 0.1981 - val_loss: 0.2457 - learning_rate: 3.1250e-05
+Epoch 39/100
+40539/40539 - 867s - 21ms/step - loss: 0.1980 - val_loss: 0.2459 - learning_rate: 1.5625e-05
+Epoch 40/100
+40539/40539 - 869s - 21ms/step - loss: 0.1980 - val_loss: 0.2459 - learning_rate: 1.5625e-05
+Epoch 41/100
+40539/40539 - 867s - 21ms/step - loss: 0.1980 - val_loss: 0.2459 - learning_rate: 1.5625e-05
+Epoch 42/100
+40539/40539 - 867s - 21ms/step - loss: 0.1980 - val_loss: 0.2460 - learning_rate: 1.0000e-05
+Epoch 43/100
+40539/40539 - 869s - 21ms/step - loss: 0.1980 - val_loss: 0.2460 - learning_rate: 1.0000e-05
+Epoch 44/100
+40539/40539 - 868s - 21ms/step - loss: 0.1980 - val_loss: 0.2460 - learning_rate: 1.0000e-05
+Epoch 45/100
+40539/40539 - 866s - 21ms/step - loss: 0.1980 - val_loss: 0.2460 - learning_rate: 1.0000e-05
+2026-10-07 08:25:58.470895: E tensorflow/core/framework/node_def_util.cc:680] NodeDef mentions attribute use_unbounded_threadpool which is not in the op definition: Op<name=MapDataset; signature=input_dataset:variant, other_arguments: -> handle:variant; attr=f:func; attr=Targuments:list(type),min=0; attr=output_types:list(type),min=1; attr=output_shapes:list(shape),min=1; attr=use_inter_op_parallelism:bool,default=true; attr=preserve_cardinality:bool,default=false; attr=force_synchronous:bool,default=false; attr=metadata:string,default=""> This may be expected if your graph generating binary is newer  than this binary. Unknown attributes will be ignored. NodeDef: {{node ParallelMapDatasetV2/_15}}
+W0000 00:00:1791361561.263481  496033 tf_tfl_flatbuffer_helpers.cc:365] Ignored output_format.
+W0000 00:00:1791361561.263555  496033 tf_tfl_flatbuffer_helpers.cc:368] Ignored drop_control_dependency.
+fully_quantize: 0, inference_type: 6, input_inference_type: INT8, output_inference_type: INT8
+micro_tcn: val RMSE 32.93 ms (RLS 37.14), skill 0.210, sign acc 0.684 | int8 RMSE 33.08 vs float 32.80 (subsample)
+
+=== tcn_lite: tcn_lite, 9 features, residual=True ===
+Epoch 1/100
+2026-10-07 08:26:22.318431: E tensorflow/core/framework/node_def_util.cc:680] NodeDef mentions attribute use_unbounded_threadpool which is not in the op definition: Op<name=MapDataset; signature=input_dataset:variant, other_arguments: -> handle:variant; attr=f:func; attr=Targuments:list(type),min=0; attr=output_types:list(type),min=1; attr=output_shapes:list(shape),min=1; attr=use_inter_op_parallelism:bool,default=true; attr=preserve_cardinality:bool,default=false; attr=force_synchronous:bool,default=false; attr=metadata:string,default=""> This may be expected if your graph generating binary is newer  than this binary. Unknown attributes will be ignored. NodeDef: {{node ParallelMapDatasetV2/_16}}
+2026-10-07 08:38:31.654305: E tensorflow/core/framework/node_def_util.cc:680] NodeDef mentions attribute use_unbounded_threadpool which is not in the op definition: Op<name=MapDataset; signature=input_dataset:variant, other_arguments: -> handle:variant; attr=f:func; attr=Targuments:list(type),min=0; attr=output_types:list(type),min=1; attr=output_shapes:list(shape),min=1; attr=use_inter_op_parallelism:bool,default=true; attr=preserve_cardinality:bool,default=false; attr=force_synchronous:bool,default=false; attr=metadata:string,default=""> This may be expected if your graph generating binary is newer  than this binary. Unknown attributes will be ignored. NodeDef: {{node ParallelMapDatasetV2/_16}}
+40539/40539 - 748s - 18ms/step - loss: 0.2044 - val_loss: 0.2524 - learning_rate: 0.0010
+Epoch 2/100
+40539/40539 - 708s - 17ms/step - loss: 0.1995 - val_loss: 0.2480 - learning_rate: 0.0010
+Epoch 3/100
+40539/40539 - 712s - 18ms/step - loss: 0.1984 - val_loss: 0.2462 - learning_rate: 0.0010
+Epoch 4/100
+40539/40539 - 711s - 18ms/step - loss: 0.1977 - val_loss: 0.2454 - learning_rate: 0.0010
+Epoch 5/100
+40539/40539 - 713s - 18ms/step - loss: 0.1973 - val_loss: 0.2449 - learning_rate: 0.0010
+Epoch 6/100
+40539/40539 - 711s - 18ms/step - loss: 0.1970 - val_loss: 0.2447 - learning_rate: 0.0010
+Epoch 7/100
+40539/40539 - 708s - 17ms/step - loss: 0.1968 - val_loss: 0.2441 - learning_rate: 0.0010
+Epoch 8/100
+40539/40539 - 711s - 18ms/step - loss: 0.1966 - val_loss: 0.2440 - learning_rate: 0.0010
+Epoch 9/100
+40539/40539 - 709s - 17ms/step - loss: 0.1964 - val_loss: 0.2437 - learning_rate: 0.0010
+Epoch 10/100
+40539/40539 - 709s - 17ms/step - loss: 0.1963 - val_loss: 0.2441 - learning_rate: 0.0010
+Epoch 11/100
+40539/40539 - 709s - 17ms/step - loss: 0.1962 - val_loss: 0.2440 - learning_rate: 0.0010
+Epoch 12/100
+40539/40539 - 708s - 17ms/step - loss: 0.1961 - val_loss: 0.2439 - learning_rate: 0.0010
+Epoch 13/100
+40539/40539 - 708s - 17ms/step - loss: 0.1954 - val_loss: 0.2434 - learning_rate: 5.0000e-04
+Epoch 14/100
+40539/40539 - 708s - 17ms/step - loss: 0.1953 - val_loss: 0.2432 - learning_rate: 5.0000e-04
+Epoch 15/100
+40539/40539 - 708s - 17ms/step - loss: 0.1952 - val_loss: 0.2432 - learning_rate: 5.0000e-04
+Epoch 16/100
+40539/40539 - 708s - 17ms/step - loss: 0.1952 - val_loss: 0.2431 - learning_rate: 5.0000e-04
+Epoch 17/100
+40539/40539 - 709s - 17ms/step - loss: 0.1951 - val_loss: 0.2431 - learning_rate: 5.0000e-04
+Epoch 18/100
+40539/40539 - 706s - 17ms/step - loss: 0.1951 - val_loss: 0.2431 - learning_rate: 5.0000e-04
+Epoch 19/100
+40539/40539 - 710s - 18ms/step - loss: 0.1951 - val_loss: 0.2430 - learning_rate: 5.0000e-04
+Epoch 20/100
+40539/40539 - 707s - 17ms/step - loss: 0.1950 - val_loss: 0.2428 - learning_rate: 5.0000e-04
+Epoch 21/100
+40539/40539 - 709s - 17ms/step - loss: 0.1950 - val_loss: 0.2428 - learning_rate: 5.0000e-04
+Epoch 22/100
+40539/40539 - 710s - 18ms/step - loss: 0.1950 - val_loss: 0.2426 - learning_rate: 5.0000e-04
+Epoch 23/100
+40539/40539 - 712s - 18ms/step - loss: 0.1950 - val_loss: 0.2427 - learning_rate: 5.0000e-04
+Epoch 24/100
+40539/40539 - 713s - 18ms/step - loss: 0.1950 - val_loss: 0.2426 - learning_rate: 5.0000e-04
+Epoch 25/100
+40539/40539 - 711s - 18ms/step - loss: 0.1949 - val_loss: 0.2426 - learning_rate: 5.0000e-04
+Epoch 26/100
+40539/40539 - 712s - 18ms/step - loss: 0.1946 - val_loss: 0.2421 - learning_rate: 2.5000e-04
+Epoch 27/100
+40539/40539 - 710s - 18ms/step - loss: 0.1945 - val_loss: 0.2422 - learning_rate: 2.5000e-04
+Epoch 28/100
+40539/40539 - 711s - 18ms/step - loss: 0.1945 - val_loss: 0.2421 - learning_rate: 2.5000e-04
+Epoch 29/100
+40539/40539 - 710s - 18ms/step - loss: 0.1945 - val_loss: 0.2420 - learning_rate: 2.5000e-04
+Epoch 30/100
+40539/40539 - 709s - 17ms/step - loss: 0.1945 - val_loss: 0.2420 - learning_rate: 2.5000e-04
+Epoch 31/100
+40539/40539 - 712s - 18ms/step - loss: 0.1945 - val_loss: 0.2420 - learning_rate: 2.5000e-04
+Epoch 32/100
+40539/40539 - 710s - 18ms/step - loss: 0.1945 - val_loss: 0.2420 - learning_rate: 2.5000e-04
+Epoch 33/100
+40539/40539 - 708s - 17ms/step - loss: 0.1943 - val_loss: 0.2418 - learning_rate: 1.2500e-04
+Epoch 34/100
+40539/40539 - 709s - 17ms/step - loss: 0.1943 - val_loss: 0.2417 - learning_rate: 1.2500e-04
+Epoch 35/100
+40539/40539 - 712s - 18ms/step - loss: 0.1942 - val_loss: 0.2417 - learning_rate: 1.2500e-04
+Epoch 36/100
+40539/40539 - 711s - 18ms/step - loss: 0.1942 - val_loss: 0.2417 - learning_rate: 1.2500e-04
+Epoch 37/100
+40539/40539 - 710s - 18ms/step - loss: 0.1942 - val_loss: 0.2417 - learning_rate: 1.2500e-04
+Epoch 38/100
+40539/40539 - 710s - 18ms/step - loss: 0.1942 - val_loss: 0.2416 - learning_rate: 1.2500e-04
+Epoch 39/100
+40539/40539 - 713s - 18ms/step - loss: 0.1941 - val_loss: 0.2417 - learning_rate: 6.2500e-05
+Epoch 40/100
+40539/40539 - 713s - 18ms/step - loss: 0.1941 - val_loss: 0.2417 - learning_rate: 6.2500e-05
+Epoch 41/100
+40539/40539 - 711s - 18ms/step - loss: 0.1941 - val_loss: 0.2417 - learning_rate: 6.2500e-05
+Epoch 42/100
+40539/40539 - 711s - 18ms/step - loss: 0.1941 - val_loss: 0.2417 - learning_rate: 3.1250e-05
+Epoch 43/100
+40539/40539 - 717s - 18ms/step - loss: 0.1940 - val_loss: 0.2417 - learning_rate: 3.1250e-05
+Epoch 44/100
+40539/40539 - 711s - 18ms/step - loss: 0.1940 - val_loss: 0.2417 - learning_rate: 3.1250e-05
+Epoch 45/100
+40539/40539 - 711s - 18ms/step - loss: 0.1940 - val_loss: 0.2417 - learning_rate: 1.5625e-05
+Epoch 46/100
+40539/40539 - 712s - 18ms/step - loss: 0.1940 - val_loss: 0.2417 - learning_rate: 1.5625e-05
+Epoch 47/100
+40539/40539 - 717s - 18ms/step - loss: 0.1940 - val_loss: 0.2417 - learning_rate: 1.5625e-05
+Epoch 48/100
+40539/40539 - 711s - 18ms/step - loss: 0.1940 - val_loss: 0.2417 - learning_rate: 1.0000e-05
+2026-10-07 17:55:18.761169: E tensorflow/core/framework/node_def_util.cc:680] NodeDef mentions attribute use_unbounded_threadpool which is not in the op definition: Op<name=MapDataset; signature=input_dataset:variant, other_arguments: -> handle:variant; attr=f:func; attr=Targuments:list(type),min=0; attr=output_types:list(type),min=1; attr=output_shapes:list(shape),min=1; attr=use_inter_op_parallelism:bool,default=true; attr=preserve_cardinality:bool,default=false; attr=force_synchronous:bool,default=false; attr=metadata:string,default=""> This may be expected if your graph generating binary is newer  than this binary. Unknown attributes will be ignored. NodeDef: {{node ParallelMapDatasetV2/_15}}
+W0000 00:00:1791395815.248581  496033 tf_tfl_flatbuffer_helpers.cc:365] Ignored output_format.
+W0000 00:00:1791395815.248656  496033 tf_tfl_flatbuffer_helpers.cc:368] Ignored drop_control_dependency.
+fully_quantize: 0, inference_type: 6, input_inference_type: INT8, output_inference_type: INT8
+2026-10-07 17:56:56.460982: E tensorflow/core/framework/node_def_util.cc:680] NodeDef mentions attribute use_unbounded_threadpool which is not in the op definition: Op<name=MapDataset; signature=input_dataset:variant, other_arguments: -> handle:variant; attr=f:func; attr=Targuments:list(type),min=0; attr=output_types:list(type),min=1; attr=output_shapes:list(shape),min=1; attr=use_inter_op_parallelism:bool,default=true; attr=preserve_cardinality:bool,default=false; attr=force_synchronous:bool,default=false; attr=metadata:string,default=""> This may be expected if your graph generating binary is newer  than this binary. Unknown attributes will be ignored. NodeDef: {{node ParallelMapDatasetV2/_15}}
+tcn_lite: val RMSE 32.64 ms (RLS 37.14), skill 0.217, sign acc 0.688 | int8 RMSE 33.00 vs float 32.71 (subsample)
+
+=== gru: gru, 9 features, residual=True ===
+Epoch 1/100
+2026-10-07 17:57:44.004313: E tensorflow/core/framework/node_def_util.cc:680] NodeDef mentions attribute use_unbounded_threadpool which is not in the op definition: Op<name=MapDataset; signature=input_dataset:variant, other_arguments: -> handle:variant; attr=f:func; attr=Targuments:list(type),min=0; attr=output_types:list(type),min=1; attr=output_shapes:list(shape),min=1; attr=use_inter_op_parallelism:bool,default=true; attr=preserve_cardinality:bool,default=false; attr=force_synchronous:bool,default=false; attr=metadata:string,default=""> This may be expected if your graph generating binary is newer  than this binary. Unknown attributes will be ignored. NodeDef: {{node ParallelMapDatasetV2/_16}}
